@@ -1,0 +1,10 @@
+{
+  "NAV.HOME": "Inicio",
+  "NAV.ITEMS": "Elementos",
+  "HOME.TITLE": "Custom App",
+  "HOME.SUBTITLE": "Nuevas funcionalidades con Django + React + TypeScript",
+  "COMMON.LOADING": "Cargando...",
+  "COMMON.ERROR": "Error",
+  "COMMON.SAVE": "Guardar",
+  "COMMON.CANCEL": "Cancelar"
+}

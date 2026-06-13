@@ -1,0 +1,49 @@
+{% load i18n %}
+
+{% block subject %}
+{% blocktrans %}Bienvenido a {{ site_name }} — Tu cuenta ha sido creada{% endblocktrans %}
+{% endblock %}
+
+{% block text_body %}
+{% blocktrans %}¡Bienvenido a {{ site_name }}!{% endblocktrans %}
+
+{% trans "Tu cuenta ha sido creada y está lista para usar." %}
+{% trans "Ya puedes iniciar sesión y explorar todo el contenido." %}
+
+{% trans "¡Gracias por unirte!" %}
+
+{% blocktrans %}El equipo de {{ site_name }}{% endblocktrans %}
+{% endblock text_body %}
+
+{% block html_body %}
+<div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background: #111827; border-radius: 12px; overflow: hidden;">
+  <div style="background: linear-gradient(90deg, #dc2626, #ef4444); height: 4px;"></div>
+  <div style="padding: 32px; text-align: center;">
+    <div style="font-size: 32px; color: #dc2626; margin-bottom: 8px;">&#9654;</div>
+    <h1 style="color: #ffffff; font-size: 24px; margin: 0 0 4px 0;">
+      <span style="color: #ffffff;">Cine</span><span style="color: #dc2626;">ViewHos</span>
+    </h1>
+    <p style="color: #9ca3af; font-size: 14px; margin: 0 0 24px 0;">{% trans "Tu plataforma de películas" %}</p>
+
+    <p style="color: #d1d5db; font-size: 16px; line-height: 1.5;">
+      {% blocktrans %}¡Bienvenido a {{ site_name }}!{% endblocktrans %}
+    </p>
+    <p style="color: #9ca3af; font-size: 14px; line-height: 1.5;">
+      {% trans "Tu cuenta ha sido creada y está lista para usar." %}<br>
+      {% trans "Ya puedes iniciar sesión y disfrutar de todo el contenido." %}
+    </p>
+
+    <div style="margin: 24px 0;">
+      <a href="http://localhost:3000/login"
+         style="display: inline-block; background: #dc2626; color: #ffffff; text-decoration: none;
+                padding: 12px 32px; border-radius: 8px; font-size: 14px; font-weight: bold;">
+        {% trans "Iniciar Sesión" %}
+      </a>
+    </div>
+
+    <p style="color: #6b7280; font-size: 12px; margin-top: 24px;">
+      {% blocktrans %}El equipo de {{ site_name }}{% endblocktrans %}
+    </p>
+  </div>
+</div>
+{% endblock html_body %}

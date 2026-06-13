@@ -1,0 +1,9 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "skills": {
+    "paths": [
+      "C:\\Proyect\\proyect_open_code\\.opencode\\skills",
+      "C:\\Proyect\\devplaybook"
+    ]
+  }
+}
