@@ -25,10 +25,23 @@ development/*
 *.pyc
 __pycache__
 venv
+*.egg-info/
+.venv/
 
 # NodeJS
 node_modules
+frontend/node_modules
+frontend/dist
+
+# Backend
+backend/__pycache__
+backend/static
+backend/*.egg-info/
 
 # VitePress
 **/.vitepress/dist
 **/.vitepress/cache
+
+# OS
+.DS_Store
+Thumbs.db
