@@ -45,7 +45,11 @@ jobs:
       - name: Run migrations
         working-directory: ./backend
         env:
-          DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_db
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_DB: test_db
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
           DJANGO_SECRET_KEY: test-secret-key-for-ci
           DJANGO_DEBUG: False
         run: |
@@ -54,7 +58,11 @@ jobs:
       - name: Run tests
         working-directory: ./backend
         env:
-          DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_db
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_DB: test_db
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
           DJANGO_SECRET_KEY: test-secret-key-for-ci
           DJANGO_DEBUG: False
         run: |
@@ -68,7 +76,11 @@ jobs:
       - name: Check Django system
         working-directory: ./backend
         env:
-          DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_db
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_DB: test_db
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
           DJANGO_SECRET_KEY: test-secret-key-for-ci
           DJANGO_DEBUG: False
         run: |
