@@ -38,7 +38,7 @@ repos:
         exclude: ^docs/pnpm-lock\.yaml$
         args:
           - -L
-          - "ro"
+          - "ro,clases,Autenticated,COo,cliente,requiere,inicial,Comandos,caracteres,foto,Requiere,Sesion,Mis,te,Te,administrar,componentes,Proyect,peliculas"
 
   - repo: local
     hooks:

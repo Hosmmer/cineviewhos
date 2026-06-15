@@ -37,7 +37,7 @@ src/
   pages/
     LoginPage.tsx       # Login form (username/email, password) — cinematic theme
     RegisterPage.tsx    # Register form — cinematic theme
-    DashboardPage.tsx   # Autenticated dashboard (placeholder)
+    DashboardPage.tsx   # Authenticated dashboard (placeholder)
     PasswordResetPage.tsx    # Solicitar reset
     PasswordResetConfirmPage.tsx  # Confirmar reset (via email link)
   components/

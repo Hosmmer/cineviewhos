@@ -70,6 +70,3 @@ Implement the movies domain for CineViewHos: Genre and Movie models, staff-only 
 ## References
 - Spec: `thoughts/tickets/MOVIE-MANAGEMENT-003/2026-06-15-movie-management_spec.md`
 - Plan: `thoughts/tickets/MOVIE-MANAGEMENT-003/2026-06-15-movie-management_plan.md`
-
-
-

@@ -24,4 +24,3 @@
 - New: ProtectedRoute para rutas privadas
 - New: Auth pages full-screen con tema cinematográfico oscuro
 - Spec: [LOGIN-001-user-authentication.md](specs/LOGIN-001-user-authentication.md)
-

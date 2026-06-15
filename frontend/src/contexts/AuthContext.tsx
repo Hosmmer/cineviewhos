@@ -1,48 +1,71 @@
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react'
-import type { AuthContextType, User, AuthTokens, LoginCredentials, RegisterData } from '@/types/auth'
-import { loginUser, registerUser, resetPasswordRequest, saveAuthData, clearAuthData, loadAuthData } from '@/services/authService'
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  type ReactNode,
+} from "react";
+import type {
+  AuthContextType,
+  User,
+  AuthTokens,
+  LoginCredentials,
+  RegisterData,
+} from "@/types/auth";
+import {
+  loginUser,
+  registerUser,
+  resetPasswordRequest,
+  saveAuthData,
+  clearAuthData,
+  loadAuthData,
+} from "@/services/authService";
 
-const AuthContext = createContext<AuthContextType | null>(null)
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [tokens, setTokens] = useState<AuthTokens | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [user, setUser] = useState<User | null>(null);
+  const [tokens, setTokens] = useState<AuthTokens | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const data = loadAuthData()
+    const data = loadAuthData();
     if (data.user && data.tokens) {
-      setUser(data.user)
-      setTokens(data.tokens)
+      setUser(data.user);
+      setTokens(data.tokens);
     }
-    setIsLoading(false)
-  }, [])
+    setIsLoading(false);
+  }, []);
 
   const login = useCallback(async (credentials: LoginCredentials) => {
-    const result = await loginUser(credentials)
-    setUser(result.user)
-    setTokens(result.tokens)
-    saveAuthData(result.user, result.tokens)
-  }, [])
+    const result = await loginUser(credentials);
+    setUser(result.user);
+    setTokens(result.tokens);
+    saveAuthData(result.user, result.tokens);
+  }, []);
 
   const register = useCallback(async (data: RegisterData) => {
-    await registerUser(data)
-  }, [])
+    await registerUser(data);
+  }, []);
 
   const logout = useCallback(() => {
-    setUser(null)
-    setTokens(null)
-    clearAuthData()
-  }, [])
+    setUser(null);
+    setTokens(null);
+    clearAuthData();
+  }, []);
 
-  const updateUser = useCallback((updatedUser: User) => {
-    setUser(updatedUser)
-    saveAuthData(updatedUser, tokens!)
-  }, [tokens])
+  const updateUser = useCallback(
+    (updatedUser: User) => {
+      setUser(updatedUser);
+      saveAuthData(updatedUser, tokens!);
+    },
+    [tokens],
+  );
 
   const resetPassword = useCallback(async (email: string) => {
-    await resetPasswordRequest(email)
-  }, [])
+    await resetPasswordRequest(email);
+  }, []);
 
   return (
     <AuthContext.Provider
@@ -60,13 +83,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     >
       {children}
     </AuthContext.Provider>
-  )
+  );
 }
 
 export function useAuth(): AuthContextType {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    throw new Error("useAuth must be used within an AuthProvider");
   }
-  return context
+  return context;
 }

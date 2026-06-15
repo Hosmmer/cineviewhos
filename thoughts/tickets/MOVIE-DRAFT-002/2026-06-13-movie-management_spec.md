@@ -126,4 +126,3 @@ Implement a movie management system for CineViewHos that allows staff users to c
 ## 6. Open Questions
 
 None. All requirements have been clarified during the grill-with-docs session.
-

@@ -563,6 +563,3 @@ The following deviations from the original plan were made during implementation:
 5. Admin sidebar stays fixed/sticky — does not collapse or have mobile toggle in v1
 6. Toast/success messages use a simple inline component, not a third-party library
 7. Genre pages do not need pagination (small dataset expected)
-
-
-

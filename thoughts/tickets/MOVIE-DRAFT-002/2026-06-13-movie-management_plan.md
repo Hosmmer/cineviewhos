@@ -40,5 +40,3 @@ This plan covered the initial draft scope — create-only movie management with 
 ## References
 - Specification: `thoughts/tickets/MOVIE-DRAFT-002/2026-06-13-movie-management_spec.md`
 - Superseded by: `thoughts/tickets/MOVIE-MANAGEMENT-003/2026-06-15-movie-management_plan.md`
-
-
