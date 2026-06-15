@@ -20,11 +20,11 @@ jobs:
         with:
           go-version: "^1.14"
       - run: pip install -U pre-commit
-      - run: pre-commit run --color=always --all-files
+      - name: Auto-fix formatting
+        run: pre-commit run --color=always --all-files || true
         env:
           GO111MODULE: on
-        continue-on-error: true
-      - name: Auto-commit pre-commit fixes
+      - name: Commit auto-fixes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -35,6 +35,10 @@ jobs:
             git commit -m "style: auto-fix pre-commit formatting [skip ci]"
             git push
           fi
+      - name: Verify formatting passes
+        run: pre-commit run --color=always --all-files
+        env:
+          GO111MODULE: on
 
   frontend:
     runs-on: ubuntu-latest
