@@ -24,35 +24,58 @@ Crear los TRES de una vez:
 - `YYYY-MM-DD-name_plan.md`
 - `YYYY-MM-DD-name.md` (description)
 
+## PR Naming — Usar siempre el Ticket ID
+
+El branch y PR deben nombrarse con el ticket ID, NO con nombres genéricos:
+
+```
+Branch:  feat/<TICKET-ID-slug>   o   fix/<TICKET-ID-slug>
+PR title: <TICKET-ID>: <feature description>
+```
+
+Ejemplos:
+- `feat/USER-DRAWER-004` → PR: `USER-DRAWER-004: add user drawer sidebar`
+- `fix/LOGIN-001` → PR: `LOGIN-001: fix login redirect loop`
+
+**NUNCA** uses nombres como `fix/ci-lint-formatting` o `feat/some-random-name`. Siempre referencia el ticket.
+
+## CI/GitHub Actions — Verificar ANTES de mergear PR
+
+El CI tiene 3 jobs: lint, frontend, backend. Los 3 deben pasar en verde.
+
+### Frontend CI
+- TypeScript: `npx tsc --noEmit` → 0 errores
+- Build: `npm run build` → exitoso
+
+### Backend CI
+- Migraciones: `python manage.py migrate` → sin errores
+- Tests: `pytest` → todos pasan
+- Ruff: `ruff check` → sin errores
+- Django check: `python manage.py check` → sin warnings
+
+### Checklist antes de pushear
+- [ ] `npx tsc --noEmit` pasa (0 errores)
+- [ ] `npm run build` exitoso
+- [ ] Migraciones commiteadas (`git ls-files` las muestra)
+- [ ] `black .` en backend
+- [ ] `isort .` en backend
+- [ ] `prettier --write` en frontend
+- [ ] Branch nombrado con ticket ID: `feat/<TICKET>` o `fix/<TICKET>`
+- [ ] PR title usa ticket ID: `<TICKET>: <description>`
+
+### Si CI falla
+1. Leer el log del job que falló
+2. Corregir el error (NO hacer workaround)
+3. Pushear fix
+4. Esperar CI verde
+5. Mergear
+
 ## Reglas
 
 - **NUNCA** hacer wiki (paso 9) antes de QA aprobado (paso 8)
 - **NUNCA** hacer push (paso 10) antes de documentar (paso 9)
 - **NUNCA** escribir código antes de spec + plan aprobados
+- **NUNCA** mergear PR sin CI verde (los 3 jobs)
 - **SIEMPRE** crear los 3 archivos del ticket juntos
+- **SIEMPRE** nombrar branch y PR con el ticket ID
 - **SIEMPRE** pedir aprobación del usuario entre fases
-
-## CI/GitHub Actions — Verificar ANTES de mergear PR
-
-Antes de hacer merge del PR a main, verificar que CI pase:
-
-1. **Migraciones**: Si se agregaron campos a modelos, verificar que el archivo de migración esté commiteado:
-   ```
-   git ls-files backend/apps/<app>/migrations/
-   ```
-2. **Pre-commit hooks**: El CI corre `pre-commit run --all-files`. Antes de pushear, ejecutar formateo en TODOS los archivos:
-   - `black .` en backend (todos los .py)
-   - `isort .` en backend (todos los .py)
-   - `prettier --write 'src/**/*.{ts,tsx}'` en frontend
-3. **TypeScript**: `npx tsc --noEmit` debe pasar (0 errores)
-4. **Build**: `npm run build` (Vite) debe ser exitoso
-5. **codespell**: Palabras en español en UI strings deben agregarse al ignore list en `.pre-commit-config.yaml`
-6. **end-of-file**: Todos los archivos .md/.py/.tsx deben terminar con newline
-7. **trailing-whitespace**: Sin espacios al final de líneas
-
-**Checklist antes de `/gcpush`:**
-- [ ] `npx tsc --noEmit` pasa (0 errores)
-- [ ] `npm run build` exitoso
-- [ ] Migraciones commiteadas si se modificaron modelos
-- [ ] Black + isort + prettier aplicados a TODO el proyecto, no solo archivos modificados
-- [ ] CI verde en el PR antes de mergear
