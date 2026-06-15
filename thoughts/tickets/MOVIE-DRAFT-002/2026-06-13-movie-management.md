@@ -2,7 +2,7 @@
 
 ## Overview
 
-Initial draft specification for a movie management system for CineViewHos. This ticket scoped movie and genre models, staff-only admin panel with sidebar navigation, movie creation form with poster upload, and basic listing views. **Superseded by [MOVIE-003](../MOVIE-003/2026-06-15-movie-management.md)** which expanded scope to include editing, soft-delete, director/actors fields, Home page catalog, public API, and full CRUD for both movies and genres.
+Initial draft specification for a movie management system for CineViewHos. This ticket scoped movie and genre models, staff-only admin panel with sidebar navigation, movie creation form with poster upload, and basic listing views. **Superseded by [MOVIE-MANAGEMENT-003](../MOVIE-MANAGEMENT-003/2026-06-15-movie-management.md)** which expanded scope to include editing, soft-delete, director/actors fields, Home page catalog, public API, and full CRUD for both movies and genres.
 
 ## What This Ticket Covers (Draft Scope)
 
@@ -20,9 +20,9 @@ Initial draft specification for a movie management system for CineViewHos. This 
 - Genre list and create pages (`/admin/genres`)
 - Non-staff users redirected from `/admin/*`
 
-## What Changed in MOVIE-003
+## What Changed in MOVIE-MANAGEMENT-003
 
-| Aspect | MOVIE-DRAFT-002 (Draft) | MOVIE-003 (Implemented) |
+| Aspect | MOVIE-DRAFT-002 (Draft) | MOVIE-MANAGEMENT-003 (Implemented) |
 |--------|-----------------|------------------------|
 | Director | Not included | CharField, required |
 | Actors | Not included | TextField, required |
@@ -38,5 +38,6 @@ Initial draft specification for a movie management system for CineViewHos. This 
 ## References
 - Spec: `thoughts/tickets/MOVIE-DRAFT-002/2026-06-13-movie-management_spec.md`
 - Plan: `thoughts/tickets/MOVIE-DRAFT-002/2026-06-13-movie-management_plan.md`
-- Superseded by: `thoughts/tickets/MOVIE-003/2026-06-15-movie-management.md`
+- Superseded by: `thoughts/tickets/MOVIE-MANAGEMENT-003/2026-06-15-movie-management.md`
+
 

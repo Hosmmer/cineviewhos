@@ -2,11 +2,11 @@
 
 **Based on specification**: `thoughts/tickets/MOVIE-DRAFT-002/2026-06-13-movie-management_spec.md`
 
-**Status**: Superseded by [MOVIE-003](../../MOVIE-003/2026-06-15-movie-management_plan.md).
+**Status**: Superseded by [MOVIE-MANAGEMENT-003](../../MOVIE-MANAGEMENT-003/2026-06-15-movie-management_plan.md).
 
 ## Overview
 
-This plan covered the initial draft scope — create-only movie management with admin sidebar. It established the `apps/movies` Django app structure, Genre/Movie models, staff-only API, and React admin panel foundation that MOVIE-003 later expanded into a full CRUD system.
+This plan covered the initial draft scope — create-only movie management with admin sidebar. It established the `apps/movies` Django app structure, Genre/Movie models, staff-only API, and React admin panel foundation that MOVIE-MANAGEMENT-003 later expanded into a full CRUD system.
 
 ## Phases
 
@@ -30,14 +30,15 @@ This plan covered the initial draft scope — create-only movie management with 
 - Genre list and create pages
 - AdminProtectedRoute (auth + is_staff check)
 
-## Implementation Deviations (from what MOVIE-003 actually built)
-- PUT was scoped here; MOVIE-003 used PATCH
-- Poster URLs planned as full URLs; MOVIE-003 used RelativeImageField
-- No public catalog; MOVIE-003 added Home page grid
-- No director/actors fields; MOVIE-003 added them
-- No editing or deletion; MOVIE-003 added both
+## Implementation Deviations (from what MOVIE-MANAGEMENT-003 actually built)
+- PUT was scoped here; MOVIE-MANAGEMENT-003 used PATCH
+- Poster URLs planned as full URLs; MOVIE-MANAGEMENT-003 used RelativeImageField
+- No public catalog; MOVIE-MANAGEMENT-003 added Home page grid
+- No director/actors fields; MOVIE-MANAGEMENT-003 added them
+- No editing or deletion; MOVIE-MANAGEMENT-003 added both
 
 ## References
 - Specification: `thoughts/tickets/MOVIE-DRAFT-002/2026-06-13-movie-management_spec.md`
-- Superseded by: `thoughts/tickets/MOVIE-003/2026-06-15-movie-management_plan.md`
+- Superseded by: `thoughts/tickets/MOVIE-MANAGEMENT-003/2026-06-15-movie-management_plan.md`
+
 

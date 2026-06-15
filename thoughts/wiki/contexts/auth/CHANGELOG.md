@@ -1,6 +1,6 @@
 # Auth Domain Changelog
 
-## 2026-06-15 · MOVIE-003
+## 2026-06-15 · MOVIE-MANAGEMENT-003
 - New term: is_staff — exposed via custom djoser UserSerializer (`apps/common/serializers.py`)
 - Changed: DJOSER SERIALIZERS config updated to use custom `user` and `current_user` serializers
 
@@ -11,3 +11,4 @@
 - New: ProtectedRoute para rutas privadas
 - New: Auth pages full-screen con tema cinematográfico oscuro
 - Spec: [LOGIN-001-user-authentication.md](specs/LOGIN-001-user-authentication.md)
+
