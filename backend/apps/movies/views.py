@@ -1,11 +1,11 @@
-from rest_framework import viewsets, status
+from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.common.permissions import IsAdminUser
 
 from .models import Genre, Movie
-from .serializers import GenreSerializer, MovieSerializer, MovieListSerializer
+from .serializers import GenreSerializer, MovieListSerializer, MovieSerializer
 from .services import GenreService, MovieService
 
 

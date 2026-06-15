@@ -1,3 +1,3 @@
-import MovieHomePage from './MovieHomePage'
+import MovieHomePage from "./MovieHomePage";
 
-export default MovieHomePage
+export default MovieHomePage;

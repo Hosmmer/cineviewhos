@@ -4,6 +4,7 @@ import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "apps"))
 
+
 def main():
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
     try:
@@ -13,6 +14,7 @@ def main():
             "Couldn't import Django. Are you sure it's installed?"
         ) from exc
     execute_from_command_line(sys.argv)
+
 
 if __name__ == "__main__":
     main()

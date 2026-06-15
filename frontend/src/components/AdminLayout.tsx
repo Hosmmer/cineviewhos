@@ -1,5 +1,5 @@
-import { Outlet } from 'react-router-dom'
-import AdminSidebar from './AdminSidebar'
+import { Outlet } from "react-router-dom";
+import AdminSidebar from "./AdminSidebar";
 
 function AdminLayout() {
   return (
@@ -9,7 +9,7 @@ function AdminLayout() {
         <Outlet />
       </main>
     </div>
-  )
+  );
 }
 
-export default AdminLayout
+export default AdminLayout;

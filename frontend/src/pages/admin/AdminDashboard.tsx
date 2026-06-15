@@ -1,14 +1,14 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function AdminDashboard() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
-    navigate('/admin/movies', { replace: true })
-  }, [navigate])
+    navigate("/admin/movies", { replace: true });
+  }, [navigate]);
 
-  return null
+  return null;
 }
 
-export default AdminDashboard
+export default AdminDashboard;

@@ -1,5 +1,5 @@
-import time
 import logging
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -12,5 +12,7 @@ class RequestLoggingMiddleware:
         start = time.time()
         response = self.get_response(request)
         duration = time.time() - start
-        logger.info(f"{request.method} {request.path} - {duration:.2f}s - {response.status_code}")
+        logger.info(
+            f"{request.method} {request.path} - {duration:.2f}s - {response.status_code}"
+        )
         return response
