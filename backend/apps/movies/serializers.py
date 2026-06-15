@@ -1,4 +1,5 @@
 import os
+
 from django.utils import timezone
 from rest_framework import serializers
 
@@ -22,7 +23,9 @@ class GenreSerializer(serializers.ModelSerializer):
         if not value or not value.strip():
             raise serializers.ValidationError("Genre name cannot be empty.")
         if len(value) > 100:
-            raise serializers.ValidationError("Genre name must be 100 characters or fewer.")
+            raise serializers.ValidationError(
+                "Genre name must be 100 characters or fewer."
+            )
         return value.strip()
 
 
@@ -33,9 +36,18 @@ class MovieListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = [
-            "id", "title", "director", "release_year", "duration_minutes",
-            "poster", "price", "genre", "genre_name", "is_active",
-            "created_at", "updated_at",
+            "id",
+            "title",
+            "director",
+            "release_year",
+            "duration_minutes",
+            "poster",
+            "price",
+            "genre",
+            "genre_name",
+            "is_active",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
 
@@ -48,10 +60,21 @@ class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = [
-            "id", "title", "description", "director", "actors",
-            "duration_minutes", "release_year", "poster", "price",
-            "genre", "genre_detail", "genre_name", "is_active",
-            "created_at", "updated_at",
+            "id",
+            "title",
+            "description",
+            "director",
+            "actors",
+            "duration_minutes",
+            "release_year",
+            "poster",
+            "price",
+            "genre",
+            "genre_detail",
+            "genre_name",
+            "is_active",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
 
@@ -66,14 +89,18 @@ class MovieSerializer(serializers.ModelSerializer):
         if not value or not value.strip():
             raise serializers.ValidationError("Description cannot be empty.")
         if len(value.strip()) < 10:
-            raise serializers.ValidationError("Description must be at least 10 characters.")
+            raise serializers.ValidationError(
+                "Description must be at least 10 characters."
+            )
         return value.strip()
 
     def validate_director(self, value):
         if not value or not value.strip():
             raise serializers.ValidationError("Director cannot be empty.")
         if len(value) > 255:
-            raise serializers.ValidationError("Director must be 255 characters or fewer.")
+            raise serializers.ValidationError(
+                "Director must be 255 characters or fewer."
+            )
         return value.strip()
 
     def validate_actors(self, value):
@@ -112,7 +139,9 @@ class MovieSerializer(serializers.ModelSerializer):
                     f"Unsupported file type '{ext}'. Allowed: {', '.join(allowed)}"
                 )
             if value.size > 5 * 1024 * 1024:
-                raise serializers.ValidationError("Poster file size must be under 5 MB.")
+                raise serializers.ValidationError(
+                    "Poster file size must be under 5 MB."
+                )
         return value
 
     def validate_genre(self, value):

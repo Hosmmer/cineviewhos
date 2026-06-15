@@ -11,6 +11,15 @@ class GenreAdmin(admin.ModelAdmin):
 
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
-    list_display = ["title", "genre", "director", "release_year", "duration_minutes", "price", "is_active", "created_at"]
+    list_display = [
+        "title",
+        "genre",
+        "director",
+        "release_year",
+        "duration_minutes",
+        "price",
+        "is_active",
+        "created_at",
+    ]
     list_filter = ["genre", "is_active", "release_year"]
     search_fields = ["title", "director"]
