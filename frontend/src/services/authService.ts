@@ -23,6 +23,15 @@ export async function resetPasswordConfirm(uid: string, token: string, new_passw
   await djangoApi.post('/auth/users/reset_password_confirm/', { uid, token, new_password, re_new_password })
 }
 
+export async function updateProfile(formData: FormData): Promise<User> {
+  const res = await djangoApi.patch<User>('/auth/users/me/', formData)
+  return res.data
+}
+
+export async function changePassword(current_password: string, new_password: string, re_new_password: string): Promise<void> {
+  await djangoApi.post('/auth/users/set_password/', { current_password, new_password, re_new_password })
+}
+
 export function saveAuthData(user: User, tokens: AuthTokens): void {
   localStorage.setItem('auth_tokens', JSON.stringify(tokens))
   localStorage.setItem('auth_user', JSON.stringify(user))

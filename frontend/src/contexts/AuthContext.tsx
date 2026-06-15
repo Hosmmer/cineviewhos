@@ -35,6 +35,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     clearAuthData()
   }, [])
 
+  const updateUser = useCallback((updatedUser: User) => {
+    setUser(updatedUser)
+    saveAuthData(updatedUser, tokens!)
+  }, [tokens])
+
   const resetPassword = useCallback(async (email: string) => {
     await resetPasswordRequest(email)
   }, [])
@@ -50,6 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         register,
         logout,
         resetPassword,
+        updateUser,
       }}
     >
       {children}
