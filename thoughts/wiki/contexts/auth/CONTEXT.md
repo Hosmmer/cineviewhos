@@ -6,6 +6,8 @@
 
 **AuthContext**: Context de React que maneja el estado de autenticación (user, tokens, login/logout). _Avoid_: auth provider.
 
+**is_staff**: Campo booleano del modelo User que indica si el usuario tiene acceso al panel de administración. Expuesto en el endpoint `/auth/users/me/` vía custom UserSerializer.
+
 **djoser**: Librería Django que provee endpoints REST para autenticación (registro, login, password reset) usando DRF.
 
 **ProtectedRoute**: Componente React que envuelve rutas privadas y redirige a `/login` si no hay token válido.
