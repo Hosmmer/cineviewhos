@@ -68,5 +68,6 @@ Implement the movies domain for CineViewHos: Genre and Movie models, staff-only 
 - Production media file serving (S3/nginx)
 
 ## References
-- Spec: `thoughts/tickets/MOVIE-ADMIN/2026-06-15-movie-admin_spec.md`
-- Plan: `thoughts/tickets/MOVIE-ADMIN/2026-06-15-movie-admin_plan.md`
+- Spec: `thoughts/tickets/MOVIE-001/2026-06-15-MOVIE-001_spec.md`
+- Plan: `thoughts/tickets/MOVIE-001/2026-06-15-MOVIE-001_plan.md`
+

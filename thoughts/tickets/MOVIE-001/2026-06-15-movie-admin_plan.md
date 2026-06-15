@@ -1,6 +1,6 @@
 # Movie Admin — Implementation Plan
 
-**Based on specification**: `thoughts/tickets/MOVIE-ADMIN/2026-06-15-movie-admin_spec.md`
+**Based on specification**: `thoughts/tickets/MOVIE-001/2026-06-15-MOVIE-001_spec.md`
 
 ## Overview
 
@@ -519,7 +519,7 @@ Skills: (none)
 
 ## References
 
-- Specification: `thoughts/tickets/MOVIE-ADMIN/2026-06-15-movie-admin_spec.md`
+- Specification: `thoughts/tickets/MOVIE-001/2026-06-15-MOVIE-001_spec.md`
 - Backend conventions: `backend/apps/utils/models.py:4` (TimeStampedMixin), `backend/apps/core/services/base.py:5` (BaseService)
 - Permission classes: `backend/apps/common/permissions.py:4` (IsAdminUser)
 - DRF settings: `backend/config/settings.py:117` (REST_FRAMEWORK config)
@@ -563,3 +563,4 @@ The following deviations from the original plan were made during implementation:
 5. Admin sidebar stays fixed/sticky — does not collapse or have mobile toggle in v1
 6. Toast/success messages use a simple inline component, not a third-party library
 7. Genre pages do not need pagination (small dataset expected)
+
