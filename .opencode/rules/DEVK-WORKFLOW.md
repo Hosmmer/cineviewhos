@@ -31,3 +31,28 @@ Crear los TRES de una vez:
 - **NUNCA** escribir código antes de spec + plan aprobados
 - **SIEMPRE** crear los 3 archivos del ticket juntos
 - **SIEMPRE** pedir aprobación del usuario entre fases
+
+## CI/GitHub Actions — Verificar ANTES de mergear PR
+
+Antes de hacer merge del PR a main, verificar que CI pase:
+
+1. **Migraciones**: Si se agregaron campos a modelos, verificar que el archivo de migración esté commiteado:
+   ```
+   git ls-files backend/apps/<app>/migrations/
+   ```
+2. **Pre-commit hooks**: El CI corre `pre-commit run --all-files`. Antes de pushear, ejecutar formateo en TODOS los archivos:
+   - `black .` en backend (todos los .py)
+   - `isort .` en backend (todos los .py)
+   - `prettier --write 'src/**/*.{ts,tsx}'` en frontend
+3. **TypeScript**: `npx tsc --noEmit` debe pasar (0 errores)
+4. **Build**: `npm run build` (Vite) debe ser exitoso
+5. **codespell**: Palabras en español en UI strings deben agregarse al ignore list en `.pre-commit-config.yaml`
+6. **end-of-file**: Todos los archivos .md/.py/.tsx deben terminar con newline
+7. **trailing-whitespace**: Sin espacios al final de líneas
+
+**Checklist antes de `/gcpush`:**
+- [ ] `npx tsc --noEmit` pasa (0 errores)
+- [ ] `npm run build` exitoso
+- [ ] Migraciones commiteadas si se modificaron modelos
+- [ ] Black + isort + prettier aplicados a TODO el proyecto, no solo archivos modificados
+- [ ] CI verde en el PR antes de mergear
