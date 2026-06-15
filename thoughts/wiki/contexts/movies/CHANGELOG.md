@@ -1,3 +1,6 @@
+## 2026-06-15 · USER-DRAWER-004
+- Reused: RelativeImageField now also used by UserSerializer in auth domain for avatar field
+
 ## 2026-06-15 · MOVIE-MANAGEMENT-003
 - New domain: Movies
 - New terms: Admin Panel, AdminProtectedRoute, Genre, Movie, PATCH update, Poster, Public Catalog, RelativeImageField, Soft-delete

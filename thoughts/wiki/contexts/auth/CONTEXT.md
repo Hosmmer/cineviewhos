@@ -15,3 +15,11 @@
 **Refresh Token**: JWT de larga duración (1 día) usado para obtener nuevos access tokens sin re-autenticar.
 
 **UsernameOrEmailBackend**: Backend de autenticación custom que permite login con username o email.
+
+**Avatar**: Imagen de perfil del usuario almacenada como `ImageField` en el modelo User. Se expone en el endpoint `/auth/users/me/` usando `RelativeImageField` que devuelve URLs relativas (`/media/avatars/xxx.jpg`) para evitar errores de resolución DNS con el hostname interno de Docker. _Avoid_: profile picture, foto.
+
+**UserDrawer**: Panel lateral deslizable (slide-over) disparado desde el avatar en el header. Contiene menú jerárquico con acordeones expandibles (Mi Cuenta, Catálogo, Ventas), encabezado con avatar+nombre+email, y focus trap para accesibilidad. _Avoid_: sidebar, side panel.
+
+**updateUser**: Función del AuthContext que actualiza el estado del usuario en memoria y localStorage tras editar el perfil. Garantiza que componentes como Navbar y UserDrawer reflejen los cambios inmediatamente sin recargar la página.
+
+**RelativeImageField**: Campo serializador de DRF (definido en `apps.movies.serializers`) que retorna URLs relativas en lugar de absolutas. Reutilizado en el UserSerializer para el campo `avatar` ya que el proxy de Vite forwardea requests con `Host: backend:8000` y las URLs absolutas resultan en `ERR_NAME_NOT_RESOLVED` en el navegador.

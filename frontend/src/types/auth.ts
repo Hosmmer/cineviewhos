@@ -5,6 +5,7 @@ export interface User {
   first_name?: string
   last_name?: string
   is_staff?: boolean
+  avatar?: string
 }
 
 export interface LoginCredentials {
@@ -38,4 +39,5 @@ export interface AuthContextType extends AuthState {
   register: (data: RegisterData) => Promise<void>
   logout: () => void
   resetPassword: (email: string) => Promise<void>
+  updateUser: (user: User) => void
 }

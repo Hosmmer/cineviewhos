@@ -1,16 +1,29 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
+import { User } from 'lucide-react'
+import UserDrawer from '@/components/UserDrawer'
+
+function getAvatarFromStorage(): string | null {
+  try {
+    const raw = localStorage.getItem('auth_user')
+    if (raw) return JSON.parse(raw).avatar || null
+  } catch { /* ignore */ }
+  return null
+}
 
 function Navbar() {
-  const { isAuthenticated, user, logout } = useAuth()
-  const navigate = useNavigate()
+  const { isAuthenticated, user } = useAuth()
+  const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
-  const handleLogout = () => {
-    logout()
-    navigate('/login')
-  }
+  useEffect(() => {
+    setDrawerOpen(false)
+    setMenuOpen(false)
+  }, [location.pathname])
+
+  const avatarUrl = user?.avatar || getAvatarFromStorage() || null
 
   return (
     <nav className="bg-gray-950 border-b border-gray-800 px-4 sm:px-6 lg:px-8 py-3">
@@ -24,7 +37,7 @@ function Navbar() {
           <div className="relative w-full">
             <input
               type="text"
-              placeholder="Buscar películas..."
+              placeholder="Buscar peliculas..."
               className="w-full bg-gray-800 text-gray-200 text-sm rounded-full pl-10 pr-4 py-2 border border-gray-700 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 placeholder-gray-500"
             />
             <svg className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -34,19 +47,20 @@ function Navbar() {
         </div>
 
         {isAuthenticated ? (
-          <div className="flex items-center gap-4">
-            <span className="text-gray-300 text-sm hidden sm:inline">{user?.username}</span>
-            {user?.is_staff && (
-              <Link to="/admin" className="text-sm px-3 py-1.5 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition-colors font-medium">Admin</Link>
+          <button
+            onClick={() => setDrawerOpen(true)}
+            className="w-9 h-9 rounded-full bg-gray-800 border-2 border-gray-700 flex items-center justify-center overflow-hidden hover:border-red-500 transition-colors shrink-0"
+            aria-label="Open user menu"
+          >
+            {avatarUrl ? (
+              <img src={avatarUrl} alt={user?.username} className="w-full h-full object-cover" />
+            ) : (
+              <User className="w-5 h-5 text-gray-400" />
             )}
-            <button onClick={handleLogout}
-              className="text-sm px-4 py-1.5 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors font-medium">
-              Cerrar Sesión
-            </button>
-          </div>
+          </button>
         ) : (
           <div className="flex items-center gap-3">
-            <Link to="/login" className="text-sm text-gray-300 hover:text-white transition-colors">Iniciar Sesión</Link>
+            <Link to="/login" className="text-sm text-gray-300 hover:text-white transition-colors">Iniciar Sesion</Link>
             <Link to="/register" className="text-sm px-4 py-1.5 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors font-medium">Registrarse</Link>
           </div>
         )}
@@ -67,7 +81,7 @@ function Navbar() {
           <div className="relative mb-3">
             <input
               type="text"
-              placeholder="Buscar películas..."
+              placeholder="Buscar peliculas..."
               className="w-full bg-gray-800 text-gray-200 text-sm rounded-full pl-10 pr-4 py-2 border border-gray-700 focus:outline-none focus:border-red-500 placeholder-gray-500"
             />
             <svg className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,18 +89,29 @@ function Navbar() {
             </svg>
           </div>
           {isAuthenticated ? (
-            <>
-              <span className="block text-gray-400 text-sm px-2">{user?.username}</span>
-              <button onClick={handleLogout} className="block w-full text-left text-sm text-red-400 px-2 py-1">Cerrar Sesión</button>
-            </>
+            <button
+              onClick={() => { setDrawerOpen(true); setMenuOpen(false) }}
+              className="flex items-center gap-3 w-full text-left px-2 py-1 text-gray-300 hover:text-white transition-colors"
+            >
+              <div className="w-8 h-8 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center overflow-hidden shrink-0">
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt={user?.username} className="w-full h-full object-cover" />
+                ) : (
+                  <User className="w-4 h-4 text-gray-400" />
+                )}
+              </div>
+              <span className="text-sm">{user?.username}</span>
+            </button>
           ) : (
             <>
-              <Link to="/login" onClick={() => setMenuOpen(false)} className="block text-sm text-gray-300 px-2 py-1">Iniciar Sesión</Link>
+              <Link to="/login" onClick={() => setMenuOpen(false)} className="block text-sm text-gray-300 px-2 py-1">Iniciar Sesion</Link>
               <Link to="/register" onClick={() => setMenuOpen(false)} className="block text-sm text-red-400 px-2 py-1">Registrarse</Link>
             </>
           )}
         </div>
       )}
+
+      <UserDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </nav>
   )
 }
