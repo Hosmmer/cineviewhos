@@ -36,6 +36,9 @@ function Navbar() {
         {isAuthenticated ? (
           <div className="flex items-center gap-4">
             <span className="text-gray-300 text-sm hidden sm:inline">{user?.username}</span>
+            {user?.is_staff && (
+              <Link to="/admin" className="text-sm px-3 py-1.5 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition-colors font-medium">Admin</Link>
+            )}
             <button onClick={handleLogout}
               className="text-sm px-4 py-1.5 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors font-medium">
               Cerrar Sesión

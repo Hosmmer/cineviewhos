@@ -33,6 +33,7 @@ LOCAL_APPS = [
     "apps.common",
     "apps.core",
     "apps.utils",
+    "apps.movies",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -109,6 +110,9 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "static"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOW_ALL_ORIGINS = DEBUG
@@ -147,7 +151,10 @@ DJOSER = {
     "USERNAME_RESET_CONFIRM_URL": "email/reset/confirm/{uid}/{token}",
     "DOMAIN": os.environ.get("DJOSER_DOMAIN", "localhost:3000"),
     "SITE_NAME": os.environ.get("DJOSER_SITE_NAME", "CineViewHos"),
-    "SERIALIZERS": {},
+    "SERIALIZERS": {
+        "user": "apps.common.serializers.UserSerializer",
+        "current_user": "apps.common.serializers.UserSerializer",
+    },
 }
 
 SPECTACULAR_SETTINGS = {

@@ -17,6 +17,9 @@ djangoApi.interceptors.request.use((config) => {
       localStorage.removeItem('auth_tokens')
     }
   }
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type']
+  }
   return config
 })
 
