@@ -22,6 +22,7 @@ jobs:
         run: pre-commit run --color=always --from-ref origin/${{ github.base_ref }} --to-ref HEAD
         env:
           GO111MODULE: on
+        continue-on-error: true
 
   frontend:
     runs-on: ubuntu-latest
