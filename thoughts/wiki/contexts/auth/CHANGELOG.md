@@ -11,7 +11,7 @@
 - Changed: UserSerializer — usa RelativeImageField en lugar de ImageField por defecto para evitar URLs absolutas con hostname interno de Docker
 - Changed: Navbar y UserDrawer leen avatar desde localStorage como fallback además del contexto React
 - New terms: Avatar, UserDrawer, updateUser, RelativeImageField (auth)
-- Spec: [USER-DRAWER-004-user-drawer-sidebar_spec.md](../../tickets/USER-DRAWER-004/2026-06-15-user-drawer-sidebar_spec.md)
+- Spec: [USER-DRAWER-004-user-drawer-sidebar.md](specs/USER-DRAWER-004-user-drawer-sidebar.md)
 
 ## 2026-06-15 · MOVIE-MANAGEMENT-003
 - New term: is_staff — exposed via custom djoser UserSerializer (`apps/common/serializers.py`)
