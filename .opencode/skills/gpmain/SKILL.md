@@ -38,7 +38,7 @@ Use this as `<repo_path>` for all commands.
 ```
 | Repo | Was on | Action | Result |
 |------|--------|--------|--------|
-| frappe | main | pull | ✓ up to date |
+| repo | main | pull | ✓ up to date |
 ```
 
 If any step fails (dirty working tree, merge conflict, auth error), report the error and stop.

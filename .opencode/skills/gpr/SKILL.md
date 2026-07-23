@@ -23,8 +23,8 @@ git -C <repo_path> branch --show-current
 git -C <repo_path> log origin/main..HEAD --oneline
 ```
 
-- Branch is `main` → abort: "No podés hacer PR desde main. Creá una rama primero."
-- No commits ahead of main → skip: "No hay commits nuevos sobre main."
+- Branch is `main` → abort: "Can't create a PR from main. Create a branch first."
+- No commits ahead of main → skip: "No new commits ahead of main."
 
 ## Step 2 — Generate PR content
 
@@ -43,10 +43,6 @@ Generate:
 
 ## Test plan
 - [ ] <test steps>
-
-## Frappe notes
-- [ ] bench migrate runs cleanly
-- [ ] Assets rebuild if needed
 ```
 
 Show title and body to the user and ask for confirmation before creating.
@@ -73,7 +69,7 @@ Parse the `owner/repo` from the URL.
 ```
 | Repo | Branch | PR |
 |------|--------|----|
-| frappe | feat/add-endpoint | https://github.com/... |
+| repo | feat/add-endpoint | https://github.com/... |
 ```
 
 ## Error handling
