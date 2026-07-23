@@ -1,0 +1,65 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "command": {
+    "devk": {
+      "description": "Iniciar el flujo devbookIA (router SDD)",
+      "template": "Load the devk skill and follow its workflow. Classify the task and proceed step by step."
+    },
+    "gcpush": {
+      "description": "Commit y push a todos los repos",
+      "template": "Load the gcpush skill and execute it for all repos with changes."
+    },
+    "gpmain": {
+      "description": "Sync todos los repos a main",
+      "template": "Load the gpmain skill and sync all repos to latest main."
+    },
+    "gpr": {
+      "description": "Crear Pull Requests",
+      "template": "Load the gpr skill. Ask which repos first, then create PRs."
+    },
+    "grill-me": {
+      "description": "Stress-test un plan o diseño",
+      "template": "Load the grill-me skill and interview me about this plan."
+    },
+    "grill-with-docs": {
+      "description": "Grill contra el domain model",
+      "template": "Load the grill-with-docs skill. Challenge my plan against the existing domain docs."
+    },
+    "handoff": {
+      "description": "Generar documento de handoff",
+      "template": "Load the handoff skill and generate a handoff document for this session."
+    },
+    "write-a-skill": {
+      "description": "Crear un nuevo skill",
+      "template": "Load the write-a-skill skill. I want to create a new skill."
+    },
+    "create-ticket": {
+      "description": "Crear ticket en xenodocIA",
+      "template": "Load the create-ticket skill and create a new ticket."
+    },
+    "add-comment": {
+      "description": "Agregar comentario a ticket",
+      "template": "Load the add-comment skill and add a comment to the ticket."
+    },
+    "update-status": {
+      "description": "Cambiar estado de un ticket",
+      "template": "Load the update-status skill and update the ticket status."
+    },
+    "promote": {
+      "description": "Promover spec a wiki",
+      "template": "Load the promote skill and promote the ticket spec to the wiki."
+    },
+    "cineviewhos-deploy": {
+      "description": "Deploy Backend+Frontend o xenodocIA a STG/PROD",
+      "template": "Load the cineviewhos-deploy skill. Ask which repos to deploy, then audit and deploy."
+    },
+    "park": {
+      "description": "Capturar idea de ticket y rutearla",
+      "template": "Load the park skill. Interview with 3 questions, draft user story, route to destination."
+    },
+    "planning": {
+      "description": "Planificar proyectos, fases y ProjectItems",
+      "template": "Load the planning skill. Route based on intent: new project, update project, standalone tickets, or view roadmap/backlog."
+    }
+  }
+}

@@ -41,7 +41,6 @@ Read `git -C <repo_path> diff --cached` and write a Conventional Commits message
 - Format: `<type>(<optional scope>): <summary>`
 - Types: `feat`, `fix`, `refactor`, `docs`, `style`, `test`, `chore`
 - Summary: imperative mood, ≤72 chars, no trailing period
-- For Frappe: scope can be the app/module name (e.g. `feat(accounting): add tax breakdown`)
 
 ### 5. Commit
 ```bash
@@ -59,7 +58,7 @@ If no upstream exists: `git -C <repo_path> push --set-upstream origin <branch>`
 ```
 | Repo | Branch | Commit | Status |
 |------|--------|--------|--------|
-| frappe | feat/add-endpoint | feat(api): add endpoint | ✓ pushed |
+| repo | feat/add-endpoint | feat(api): add endpoint | ✓ pushed |
 ```
 
 ## Error handling

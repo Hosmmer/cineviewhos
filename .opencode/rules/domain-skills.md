@@ -1,24 +1,40 @@
 ---
-description: Always load and follow domain-specific skills when working on frontend or backend code.
+description: Auto-load domain-specific skills when working on code. Reads skill mapping from this file.
 globs:
   - "frontend/**/*"
   - "backend/**/*"
+  - "xenodocIA/**/*"
 alwaysApply: true
 ---
 
-# Domain Skill Usage Rule
+# Domain Skills
 
-**When touching ANY file under `frontend/`**, load and follow these skills:
-- `react-dev` (React 18 + TypeScript + Vite patterns)
-- `tailwind-design` (UI design system, dark cinema theme)
-- `frontend-testing` (Vitest + React Testing Library patterns)
+Load the appropriate domain skill before writing or modifying code. Use the `skill` tool.
 
-**When touching ANY file under `backend/`**, load and follow these skills:
-- `django-dev` (Django 3.0.7 + DRF 3.15 patterns)
-- `backend-testing` (Pytest + Django patterns)
+## Frontend & UI
 
-**General rules:**
-- Never write code without consulting the relevant domain skill first
-- Follow the constraints (MUST DO / MUST NOT DO) from each skill
-- Use the component patterns and conventions defined in the skills
-- Run type-checking (`npx tsc --noEmit` for frontend, `pytest` for backend) before considering work done
+Matches: `frontend/**/*`, `xenodocIA/frontend/**/*`
+
+| Skill | When |
+|-------|------|
+| `react-CineViewHos` | Always — React 18 + Vite + TypeScript patterns |
+| `tailwind-design` | Always — UI design system, dark cinema theme |
+| `frontend-testing` | Writing/changing tests |
+
+## Backend
+
+Matches: `backend/**/*`, `xenodocIA/**/*.py`
+
+| Skill | When |
+|-------|------|
+| `django-cineviewhos` | Always — Django + DRF service-layer patterns |
+| `backend-testing` | Writing/changing tests |
+
+## Architecture & Design
+
+Matches: any file
+
+| Skill | When |
+|-------|------|
+| `codebase-design` | Designing new modules, interfaces, or seams |
+| `domain-modeling` | Working with domain terminology, CONTEXT.md, or ADRs |
