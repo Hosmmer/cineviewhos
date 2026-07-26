@@ -1,10 +1,12 @@
 from djoser.serializers import UserSerializer as DjoserUserSerializer
+from rest_framework import serializers
 
 from apps.movies.serializers import RelativeImageField
 
 
 class UserSerializer(DjoserUserSerializer):
     avatar = RelativeImageField()
+    roles = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta(DjoserUserSerializer.Meta):
         fields = (
@@ -15,5 +17,6 @@ class UserSerializer(DjoserUserSerializer):
             "last_name",
             "is_staff",
             "avatar",
+            "roles",
         )
         read_only_fields = ("id", "email", "username", "is_staff")

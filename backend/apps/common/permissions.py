@@ -11,3 +11,16 @@ class IsOwnerOrAdmin(BasePermission):
         if request.user.is_staff:
             return True
         return getattr(obj, "user", None) == request.user
+
+
+class HasRole(BasePermission):
+    def __init__(self, role_slug):
+        self.role_slug = role_slug
+
+    def has_permission(self, request, view):
+        if not request.user or not request.user.is_authenticated:
+            return False
+        return request.user.roles.filter(slug=self.role_slug).exists()
+
+    def __call__(self):
+        return self

@@ -42,7 +42,8 @@ function MovieCard({ movie }: { movie: MovieList }) {
           </p>
           <div className="mt-1 space-y-0.5">
             <p className="text-gray-400 text-xs">
-              {movie.director} &middot; {movie.release_year}
+              {movie.director_name || movie.author_name || movie.actor_name || ""}{" "}
+              &middot; {movie.release_year}
             </p>
             <p className="text-gray-500 text-xs">
               {movie.genre_name} &middot; {movie.duration_minutes} min
