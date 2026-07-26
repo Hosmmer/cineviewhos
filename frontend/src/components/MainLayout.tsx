@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 import MainSidebar from "./MainSidebar";
@@ -18,7 +19,15 @@ function MainLayout() {
       <div className="flex flex-1">
         {!hideSidebar && <MainSidebar />}
         <main className="flex-1">
-          <Outlet />
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center h-full min-h-[50vh]">
+                <div className="animate-spin h-8 w-8 border-3 border-red-500 border-t-transparent rounded-full" />
+              </div>
+            }
+          >
+            <Outlet />
+          </Suspense>
         </main>
       </div>
     </div>
