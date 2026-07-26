@@ -7,9 +7,12 @@ import {
   fetchAdminMovie,
   createMovie,
   updateMovie,
+  fetchAdminGenres,
+  fetchAdminDirectors,
+  fetchAdminAuthors,
+  fetchAdminActors,
 } from "@/services/movieService";
-import { fetchAdminGenres } from "@/services/movieService";
-import type { Genre } from "@/types/movies";
+import type { Director, Author, Actor } from "@/types/movies";
 
 const currentYear = new Date().getFullYear();
 
@@ -18,8 +21,6 @@ const validationSchema = Yup.object({
   description: Yup.string()
     .required("Description is required")
     .min(10, "Must be at least 10 characters"),
-  director: Yup.string().required("Director is required").min(1).max(255),
-  actors: Yup.string().required("Actors is required"),
   duration_minutes: Yup.number()
     .required("Duration is required")
     .min(1, "Minimum 1 minute")
@@ -38,6 +39,9 @@ const validationSchema = Yup.object({
     .required("Genre is required")
     .min(1, "Select a genre")
     .typeError("Select a genre"),
+  director_fk: Yup.number().nullable().typeError("Select a director"),
+  author_fk: Yup.number().nullable().typeError("Select an author"),
+  actor_fk: Yup.number().nullable().typeError("Select an actor"),
 });
 
 function AdminMovieForm() {
@@ -47,9 +51,24 @@ function AdminMovieForm() {
   const queryClient = useQueryClient();
   const [posterPreview, setPosterPreview] = useState<string | null>(null);
 
-  const { data: genres } = useQuery<Genre[]>({
+  const { data: genres } = useQuery({
     queryKey: ["admin-genres"],
     queryFn: fetchAdminGenres,
+  });
+
+  const { data: directors } = useQuery<Director[]>({
+    queryKey: ["admin-directors"],
+    queryFn: fetchAdminDirectors,
+  });
+
+  const { data: authors } = useQuery<Author[]>({
+    queryKey: ["admin-authors"],
+    queryFn: fetchAdminAuthors,
+  });
+
+  const { data: actors } = useQuery<Actor[]>({
+    queryKey: ["admin-actors"],
+    queryFn: fetchAdminActors,
   });
 
   const { data: movie, isLoading: movieLoading } = useQuery({
@@ -80,12 +99,13 @@ function AdminMovieForm() {
     initialValues: {
       title: "",
       description: "",
-      director: "",
-      actors: "",
       duration_minutes: "" as unknown as number,
       release_year: "" as unknown as number,
       price: "" as unknown as number,
       genre: "" as unknown as number,
+      director_fk: null as number | null,
+      author_fk: null as number | null,
+      actor_fk: null as number | null,
       poster: null as File | null,
     },
     validationSchema,
@@ -105,12 +125,13 @@ function AdminMovieForm() {
       formik.setValues({
         title: movie.title,
         description: movie.description,
-        director: movie.director,
-        actors: movie.actors,
         duration_minutes: movie.duration_minutes,
         release_year: movie.release_year,
         price: Number(movie.price),
         genre: movie.genre,
+        director_fk: movie.director_fk,
+        author_fk: movie.author_fk,
+        actor_fk: movie.actor_fk,
         poster: null,
       });
       if (movie.poster) {
@@ -189,24 +210,37 @@ function AdminMovieForm() {
           </div>
           <div>
             <label
-              htmlFor="director"
+              htmlFor="director_fk"
               className="block text-sm font-medium text-gray-300 mb-1"
             >
               Director
             </label>
-            <input
-              id="director"
-              type="text"
-              {...formik.getFieldProps("director")}
+            <select
+              id="director_fk"
+              {...formik.getFieldProps("director_fk")}
+              value={formik.values.director_fk ?? ""}
+              onChange={(e) =>
+                formik.setFieldValue(
+                  "director_fk",
+                  e.target.value ? Number(e.target.value) : null,
+                )
+              }
               className={`w-full bg-gray-800 text-white text-sm rounded-lg px-4 py-2.5 border ${
-                formik.touched.director && formik.errors.director
+                formik.touched.director_fk && formik.errors.director_fk
                   ? "border-red-500"
                   : "border-gray-700 focus:border-red-500"
               } focus:outline-none focus:ring-1 focus:ring-red-500`}
-            />
-            {formik.touched.director && formik.errors.director && (
+            >
+              <option value="">No director</option>
+              {directors?.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name}
+                </option>
+              ))}
+            </select>
+            {formik.touched.director_fk && formik.errors.director_fk && (
               <p className="text-xs text-red-400 mt-1">
-                {formik.errors.director}
+                {formik.errors.director_fk}
               </p>
             )}
           </div>
@@ -236,27 +270,79 @@ function AdminMovieForm() {
           )}
         </div>
 
-        <div>
-          <label
-            htmlFor="actors"
-            className="block text-sm font-medium text-gray-300 mb-1"
-          >
-            Actors (comma separated)
-          </label>
-          <input
-            id="actors"
-            type="text"
-            {...formik.getFieldProps("actors")}
-            placeholder="Robert Downey Jr., Scarlett Johansson, Chris Evans"
-            className={`w-full bg-gray-800 text-white text-sm rounded-lg px-4 py-2.5 border ${
-              formik.touched.actors && formik.errors.actors
-                ? "border-red-500"
-                : "border-gray-700 focus:border-red-500"
-            } focus:outline-none focus:ring-1 focus:ring-red-500`}
-          />
-          {formik.touched.actors && formik.errors.actors && (
-            <p className="text-xs text-red-400 mt-1">{formik.errors.actors}</p>
-          )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label
+              htmlFor="author_fk"
+              className="block text-sm font-medium text-gray-300 mb-1"
+            >
+              Author
+            </label>
+            <select
+              id="author_fk"
+              {...formik.getFieldProps("author_fk")}
+              value={formik.values.author_fk ?? ""}
+              onChange={(e) =>
+                formik.setFieldValue(
+                  "author_fk",
+                  e.target.value ? Number(e.target.value) : null,
+                )
+              }
+              className={`w-full bg-gray-800 text-white text-sm rounded-lg px-4 py-2.5 border ${
+                formik.touched.author_fk && formik.errors.author_fk
+                  ? "border-red-500"
+                  : "border-gray-700 focus:border-red-500"
+              } focus:outline-none focus:ring-1 focus:ring-red-500`}
+            >
+              <option value="">No author</option>
+              {authors?.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                </option>
+              ))}
+            </select>
+            {formik.touched.author_fk && formik.errors.author_fk && (
+              <p className="text-xs text-red-400 mt-1">
+                {formik.errors.author_fk}
+              </p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="actor_fk"
+              className="block text-sm font-medium text-gray-300 mb-1"
+            >
+              Actor
+            </label>
+            <select
+              id="actor_fk"
+              {...formik.getFieldProps("actor_fk")}
+              value={formik.values.actor_fk ?? ""}
+              onChange={(e) =>
+                formik.setFieldValue(
+                  "actor_fk",
+                  e.target.value ? Number(e.target.value) : null,
+                )
+              }
+              className={`w-full bg-gray-800 text-white text-sm rounded-lg px-4 py-2.5 border ${
+                formik.touched.actor_fk && formik.errors.actor_fk
+                  ? "border-red-500"
+                  : "border-gray-700 focus:border-red-500"
+              } focus:outline-none focus:ring-1 focus:ring-red-500`}
+            >
+              <option value="">No actor</option>
+              {actors?.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                </option>
+              ))}
+            </select>
+            {formik.touched.actor_fk && formik.errors.actor_fk && (
+              <p className="text-xs text-red-400 mt-1">
+                {formik.errors.actor_fk}
+              </p>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

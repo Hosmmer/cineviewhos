@@ -74,7 +74,7 @@ function AdminMovieList() {
           <div className="relative flex-1 sm:flex-initial">
             <input
               type="text"
-              placeholder="Search by title or director..."
+              placeholder="Search by title..."
               defaultValue={search}
               onChange={(e) => handleSearch(e.target.value)}
               className="w-full sm:w-64 bg-gray-800 text-gray-200 text-sm rounded-lg pl-10 pr-4 py-2 border border-gray-700 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 placeholder-gray-500"
@@ -117,6 +117,12 @@ function AdminMovieList() {
               </th>
               <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3">
                 Director
+              </th>
+              <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3">
+                Author
+              </th>
+              <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3">
+                Actor
               </th>
               <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3">
                 Year
@@ -171,7 +177,13 @@ function AdminMovieList() {
                     {movie.genre_name}
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-400">
-                    {movie.director}
+                    {movie.director_name || "—"}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-400">
+                    {movie.author_name || "—"}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-400">
+                    {movie.actor_name || "—"}
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-400">
                     {movie.release_year}
@@ -216,7 +228,7 @@ function AdminMovieList() {
             ) : (
               <tr>
                 <td
-                  colSpan={9}
+                  colSpan={11}
                   className="px-4 py-12 text-center text-gray-500"
                 >
                   No movies found. Create your first movie to get started.

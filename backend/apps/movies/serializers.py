@@ -3,7 +3,7 @@ import os
 from django.utils import timezone
 from rest_framework import serializers
 
-from .models import Genre, Movie
+from .models import Actor, Author, Director, Genre, Movie
 
 
 class RelativeImageField(serializers.ImageField):
@@ -29,8 +29,68 @@ class GenreSerializer(serializers.ModelSerializer):
         return value.strip()
 
 
+class DirectorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Director
+        fields = [
+            "id", "name", "birth_date", "city",
+            "is_active", "created_at", "updated_at",
+        ]
+        read_only_fields = ["id", "created_at", "updated_at"]
+
+    def validate_name(self, value):
+        if not value or not value.strip():
+            raise serializers.ValidationError("Director name cannot be empty.")
+        if len(value) > 255:
+            raise serializers.ValidationError(
+                "Director name must be 255 characters or fewer."
+            )
+        return value.strip()
+
+
+class AuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Author
+        fields = [
+            "id", "name", "birth_date", "city",
+            "is_active", "created_at", "updated_at",
+        ]
+        read_only_fields = ["id", "created_at", "updated_at"]
+
+    def validate_name(self, value):
+        if not value or not value.strip():
+            raise serializers.ValidationError("Author name cannot be empty.")
+        if len(value) > 255:
+            raise serializers.ValidationError(
+                "Author name must be 255 characters or fewer."
+            )
+        return value.strip()
+
+
+class ActorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Actor
+        fields = [
+            "id", "name", "birth_date", "city",
+            "is_active", "created_at", "updated_at",
+        ]
+        read_only_fields = ["id", "created_at", "updated_at"]
+
+    def validate_name(self, value):
+        if not value or not value.strip():
+            raise serializers.ValidationError("Actor name cannot be empty.")
+        if len(value) > 255:
+            raise serializers.ValidationError(
+                "Actor name must be 255 characters or fewer."
+            )
+        return value.strip()
+
+
 class MovieListSerializer(serializers.ModelSerializer):
     genre_name = serializers.CharField(source="genre.name", read_only=True)
+    director_name = serializers.CharField(source="director_fk.name", read_only=True)
+    author_name = serializers.CharField(source="author_fk.name", read_only=True)
+    actor_name = serializers.CharField(source="actor_fk.name", read_only=True)
     poster = RelativeImageField(read_only=True)
 
     class Meta:
@@ -38,7 +98,9 @@ class MovieListSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
-            "director",
+            "director_name",
+            "author_name",
+            "actor_name",
             "release_year",
             "duration_minutes",
             "poster",
@@ -55,6 +117,12 @@ class MovieListSerializer(serializers.ModelSerializer):
 class MovieSerializer(serializers.ModelSerializer):
     genre_detail = GenreSerializer(source="genre", read_only=True)
     genre_name = serializers.CharField(source="genre.name", read_only=True)
+    director_detail = DirectorSerializer(source="director_fk", read_only=True)
+    director_name = serializers.CharField(source="director_fk.name", read_only=True)
+    author_detail = AuthorSerializer(source="author_fk", read_only=True)
+    author_name = serializers.CharField(source="author_fk.name", read_only=True)
+    actor_detail = ActorSerializer(source="actor_fk", read_only=True)
+    actor_name = serializers.CharField(source="actor_fk.name", read_only=True)
     poster = RelativeImageField()
 
     class Meta:
@@ -63,8 +131,6 @@ class MovieSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "description",
-            "director",
-            "actors",
             "duration_minutes",
             "release_year",
             "poster",
@@ -72,6 +138,15 @@ class MovieSerializer(serializers.ModelSerializer):
             "genre",
             "genre_detail",
             "genre_name",
+            "director_fk",
+            "director_detail",
+            "director_name",
+            "author_fk",
+            "author_detail",
+            "author_name",
+            "actor_fk",
+            "actor_detail",
+            "actor_name",
             "is_active",
             "created_at",
             "updated_at",
@@ -92,20 +167,6 @@ class MovieSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "Description must be at least 10 characters."
             )
-        return value.strip()
-
-    def validate_director(self, value):
-        if not value or not value.strip():
-            raise serializers.ValidationError("Director cannot be empty.")
-        if len(value) > 255:
-            raise serializers.ValidationError(
-                "Director must be 255 characters or fewer."
-            )
-        return value.strip()
-
-    def validate_actors(self, value):
-        if not value or not value.strip():
-            raise serializers.ValidationError("Actors cannot be empty.")
         return value.strip()
 
     def validate_duration_minutes(self, value):
@@ -147,4 +208,19 @@ class MovieSerializer(serializers.ModelSerializer):
     def validate_genre(self, value):
         if not Genre.objects.filter(id=value.id).exists():
             raise serializers.ValidationError("Selected genre does not exist.")
+        return value
+
+    def validate_director_fk(self, value):
+        if value is not None and not Director.objects.filter(id=value.id).exists():
+            raise serializers.ValidationError("Selected director does not exist.")
+        return value
+
+    def validate_author_fk(self, value):
+        if value is not None and not Author.objects.filter(id=value.id).exists():
+            raise serializers.ValidationError("Selected author does not exist.")
+        return value
+
+    def validate_actor_fk(self, value):
+        if value is not None and not Actor.objects.filter(id=value.id).exists():
+            raise serializers.ValidationError("Selected actor does not exist.")
         return value

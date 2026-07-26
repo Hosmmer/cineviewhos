@@ -4,9 +4,22 @@ from rest_framework.response import Response
 
 from apps.common.permissions import IsAdminUser
 
-from .models import Genre, Movie
-from .serializers import GenreSerializer, MovieListSerializer, MovieSerializer
-from .services import GenreService, MovieService
+from .models import Actor, Author, Director, Genre, Movie
+from .serializers import (
+    ActorSerializer,
+    AuthorSerializer,
+    DirectorSerializer,
+    GenreSerializer,
+    MovieListSerializer,
+    MovieSerializer,
+)
+from .services import (
+    ActorService,
+    AuthorService,
+    DirectorService,
+    GenreService,
+    MovieService,
+)
 
 
 class GenreAdminViewSet(viewsets.ModelViewSet):
@@ -24,7 +37,9 @@ class GenreAdminViewSet(viewsets.ModelViewSet):
 
 
 class MovieAdminViewSet(viewsets.ModelViewSet):
-    queryset = Movie.objects.select_related("genre").all()
+    queryset = Movie.objects.select_related(
+        "genre", "director_fk", "author_fk", "actor_fk"
+    ).all()
     permission_classes = [IsAuthenticated, IsAdminUser]
 
     def get_serializer_class(self):
@@ -40,6 +55,48 @@ class MovieAdminViewSet(viewsets.ModelViewSet):
         movie = self.get_object()
         service = MovieService()
         result = service.soft_delete(movie)
+        if result.success:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"detail": result.error}, status=result.status_code)
+
+
+class DirectorAdminViewSet(viewsets.ModelViewSet):
+    queryset = Director.objects.all()
+    serializer_class = DirectorSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def destroy(self, request, *args, **kwargs):
+        director = self.get_object()
+        service = DirectorService()
+        result = service.soft_delete(director)
+        if result.success:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"detail": result.error}, status=result.status_code)
+
+
+class AuthorAdminViewSet(viewsets.ModelViewSet):
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def destroy(self, request, *args, **kwargs):
+        author = self.get_object()
+        service = AuthorService()
+        result = service.soft_delete(author)
+        if result.success:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"detail": result.error}, status=result.status_code)
+
+
+class ActorAdminViewSet(viewsets.ModelViewSet):
+    queryset = Actor.objects.all()
+    serializer_class = ActorSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def destroy(self, request, *args, **kwargs):
+        actor = self.get_object()
+        service = ActorService()
+        result = service.soft_delete(actor)
         if result.success:
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response({"detail": result.error}, status=result.status_code)

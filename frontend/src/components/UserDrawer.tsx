@@ -3,12 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   User,
-  Film,
-  Tag,
   Key,
   LogOut,
-  ShoppingCart,
-  BarChart3,
   ChevronDown,
   X,
 } from "lucide-react";
@@ -161,48 +157,6 @@ function UserDrawer({ isOpen, onClose }: UserDrawerProps) {
           label: "Cerrar Sesion",
           icon: <LogOut className="w-4 h-4" />,
           action: "logout",
-        },
-      ],
-    },
-    {
-      id: "catalog",
-      label: "Catalogo",
-      icon: <Film className="w-5 h-5" />,
-      items: [
-        {
-          id: "movies",
-          label: "Mis Peliculas",
-          icon: <Film className="w-4 h-4" />,
-          action: "link",
-          to: "/admin/movies",
-        },
-        {
-          id: "genres",
-          label: "Generos",
-          icon: <Tag className="w-4 h-4" />,
-          action: "link",
-          to: "/admin/genres",
-        },
-      ],
-    },
-    {
-      id: "sales",
-      label: "Ventas",
-      icon: <ShoppingCart className="w-5 h-5" />,
-      items: [
-        {
-          id: "orders",
-          label: "Pedidos",
-          icon: <ShoppingCart className="w-4 h-4" />,
-          disabled: true,
-          disabledLabel: "Proximamente",
-        },
-        {
-          id: "reports",
-          label: "Reportes",
-          icon: <BarChart3 className="w-4 h-4" />,
-          disabled: true,
-          disabledLabel: "Proximamente",
         },
       ],
     },

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Genre, Movie
+from .models import Actor, Author, Director, Genre, Movie
 
 
 @admin.register(Genre)
@@ -9,12 +9,32 @@ class GenreAdmin(admin.ModelAdmin):
     search_fields = ["name"]
 
 
+@admin.register(Director)
+class DirectorAdmin(admin.ModelAdmin):
+    list_display = ["name", "birth_date", "city", "is_active", "created_at"]
+    search_fields = ["name"]
+
+
+@admin.register(Author)
+class AuthorAdmin(admin.ModelAdmin):
+    list_display = ["name", "birth_date", "city", "is_active", "created_at"]
+    search_fields = ["name"]
+
+
+@admin.register(Actor)
+class ActorAdmin(admin.ModelAdmin):
+    list_display = ["name", "birth_date", "city", "is_active", "created_at"]
+    search_fields = ["name"]
+
+
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
     list_display = [
         "title",
         "genre",
-        "director",
+        "director_fk",
+        "author_fk",
+        "actor_fk",
         "release_year",
         "duration_minutes",
         "price",
@@ -22,4 +42,4 @@ class MovieAdmin(admin.ModelAdmin):
         "created_at",
     ]
     list_filter = ["genre", "is_active", "release_year"]
-    search_fields = ["title", "director"]
+    search_fields = ["title"]
