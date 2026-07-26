@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import { lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import MainLayout from "@/components/MainLayout";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -28,15 +28,8 @@ const AdminActorForm = lazy(() => import("./pages/admin/AdminActorForm"));
 
 function App() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex justify-center items-center min-h-screen bg-gray-900">
-          <div className="animate-spin h-10 w-10 border-4 border-red-500 border-t-transparent rounded-full" />
-        </div>
-      }
-    >
-      <Routes>
-        <Route element={<MainLayout />}>
+    <Routes>
+      <Route element={<MainLayout />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/password/reset" element={<PasswordResetPage />} />
@@ -97,7 +90,6 @@ function App() {
           </Route>
         </Route>
       </Routes>
-    </Suspense>
   );
 }
 
