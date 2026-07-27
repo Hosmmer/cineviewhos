@@ -2,7 +2,7 @@ import os, django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 django.setup()
 from apps.common.models import User
-from apps.movies.models import Movie
+from apps.domains.movies.models import Movie
 print("CineViewHos:")
 print(f"  Usuarios: {User.objects.count()}")
 print(f"  Peliculas: {Movie.objects.count()}")

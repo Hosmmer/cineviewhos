@@ -1,7 +1,7 @@
 from djoser.serializers import UserSerializer as DjoserUserSerializer
 from rest_framework import serializers
 
-from apps.movies.serializers import RelativeImageField
+from apps.domains.movies.serializers import RelativeImageField
 
 
 class UserSerializer(DjoserUserSerializer):

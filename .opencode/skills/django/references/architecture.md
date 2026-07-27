@@ -40,23 +40,24 @@ backend/
 │   │   ├── services.py
 │   │   ├── views.py
 │   │   └── urls.py
-│   ├── movies/              # Movie domain
-│   │   ├── models.py        # Genre, Director, Author, Actor, Movie
-│   │   ├── serializers.py
-│   │   ├── services.py
-│   │   ├── views.py         # Admin endpoints
-│   │   ├── views_public.py  # Public endpoints
-│   │   ├── urls.py
-│   │   ├── urls_public.py
-│   │   └── admin.py
-│   └── reservations/        # Reservation domain
-│       ├── models.py        # Sala, Funcion, Seat, Reserva, ReservaSeat
-│       ├── serializers.py
-│       ├── services.py
-│       ├── views.py
-│       ├── views_public.py
-│       ├── urls.py
-│       └── urls_public.py
+│   ├── domains/             # Business domains
+│   │   ├── movies/              # Movie domain
+│   │   │   ├── models.py        # Genre, Director, Author, Actor, Movie
+│   │   │   ├── serializers.py
+│   │   │   ├── services.py
+│   │   │   ├── views.py         # Admin endpoints
+│   │   │   ├── views_public.py  # Public endpoints
+│   │   │   ├── urls.py
+│   │   │   ├── urls_public.py
+│   │   │   └── admin.py
+│   │   └── reservations/        # Reservation domain
+│   │       ├── models.py        # Sala, Funcion, Seat, Reserva, ReservaSeat
+│   │       ├── serializers.py
+│   │       ├── services.py
+│   │       ├── views.py
+│   │       ├── views_public.py
+│   │       ├── urls.py
+│   │       └── urls_public.py
 └── tests/                   # Pytest suite
     └── apps/
         └── {app}/           # Mirrors apps/ structure
@@ -66,7 +67,7 @@ backend/
 
 ## When to Create a New App
 
-Create a new `apps/{domain}/` when:
+Create a new `apps/domains/{domain}/` when:
 
 1. **New bounded context**: a set of models/serializers/services/views that form a distinct domain (e.g., `payments/`, `loyalty/`, `analytics/`)
 2. **5+ models**: if a single app has more than ~5 models, consider splitting
@@ -100,7 +101,7 @@ Split when:
 Django-Styleguide recommends separating reads from writes:
 
 ```python
-# apps/movies/selectors.py
+# apps/domains/movies/selectors.py
 def movie_get_by_id(*, movie_id: int) -> Movie:
     return Movie.objects.get(id=movie_id)
 
@@ -207,7 +208,7 @@ from rest_framework import serializers, viewsets
 # 3. Internal apps (absolute path)
 from apps.core.services.base import BaseService
 from apps.core.data_classes import ServiceResult
-from apps.movies.models import Genre
+from apps.domains.movies.models import Genre
 
 # 4. Same app (relative)
 from .models import Movie

@@ -104,6 +104,6 @@ class UserSerializer(DjoserUserSerializer):
 
 ```python
 from rest_framework import serializers
-from apps.movies.models import Genre
-from apps.movies.serializers import RelativeImageField
+from apps.domains.movies.models import Genre
+from apps.domains.movies.serializers import RelativeImageField
 ```

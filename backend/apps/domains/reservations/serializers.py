@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.movies.models import Movie
+from apps.domains.movies.models import Movie
 
 from .models import Funcion, Reserva, ReservaSeat, Sala, Seat
 

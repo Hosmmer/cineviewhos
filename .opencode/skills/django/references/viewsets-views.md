@@ -106,5 +106,5 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from apps.common.permissions import IsAdminUser, HasRole
-from apps.movies.services import MovieService
+from apps.domains.movies.services import MovieService
 ```

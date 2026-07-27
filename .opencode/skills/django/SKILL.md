@@ -99,7 +99,7 @@ def create(self, request, *args, **kwargs):
 ## File Layout per App
 
 ```
-apps/{domain}/
+apps/domains/{domain}/
 ├── models.py
 ├── serializers.py
 ├── services.py

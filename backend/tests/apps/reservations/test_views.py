@@ -3,8 +3,8 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from datetime import timedelta
 
-from apps.movies.models import Genre, Movie
-from apps.reservations.models import Funcion, Reserva, ReservaSeat, Sala, Seat
+from apps.domains.movies.models import Genre, Movie
+from apps.domains.reservations.models import Funcion, Reserva, ReservaSeat, Sala, Seat
 
 User = get_user_model()
 
@@ -233,7 +233,7 @@ class TestAdminEndpoints:
 
     @pytest.mark.django_db
     def test_list_reservas_admin(self, admin_client, client_user, funcion, seats):
-        from apps.reservations.services import ReservaService
+        from apps.domains.reservations.services import ReservaService
         service = ReservaService()
         service.create_reserva(
             user=client_user, funcion=funcion, seat_ids=[seats[0].id]
@@ -249,7 +249,7 @@ class TestAdminEndpoints:
     def test_admin_anular_reserva(
         self, admin_client, client_user, funcion, seats
     ):
-        from apps.reservations.services import ReservaService
+        from apps.domains.reservations.services import ReservaService
         service = ReservaService()
         create_result = service.create_reserva(
             user=client_user, funcion=funcion, seat_ids=[seats[0].id]

@@ -33,9 +33,9 @@ LOCAL_APPS = [
     "apps.common",
     "apps.core",
     "apps.utils",
-    "apps.movies",
+    "apps.domains.movies",
     "apps.modules",
-    "apps.reservations",
+    "apps.domains.reservations",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
