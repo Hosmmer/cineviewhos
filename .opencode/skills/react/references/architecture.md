@@ -217,7 +217,7 @@ src/
 
 ### Route File Pattern
 
-Each route file exports a **default function component** returning a `<Route>` fragment:
+Each route file exports a **JSX fragment** (not a component), because React Router v6 `<Routes>` requires direct `<Route>` or `<React.Fragment>` children — custom components are not allowed.
 
 ```typescript
 // src/routes/admin.tsx
@@ -228,26 +228,39 @@ import AdminLayout from "@/components/AdminLayout";
 
 const AdminMovieList = lazy(() => import("@/pages/admin/AdminMovieList"));
 const AdminMovieForm = lazy(() => import("@/pages/admin/AdminMovieForm"));
+const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
 
-function AdminRoutes() {
-  return (
-    <Route
-      path="/admin"
-      element={
-        <AdminProtectedRoute>
-          <AdminLayout />
-        </AdminProtectedRoute>
-      }
-    >
-      <Route index element={<AdminDashboard />} />
-      <Route path="movies" element={<AdminMovieList />} />
-      <Route path="movies/create" element={<AdminMovieForm />} />
-      <Route path="movies/:id/edit" element={<AdminMovieForm />} />
-    </Route>
-  );
-}
+const adminRoutes = (
+  <Route
+    path="/admin"
+    element={
+      <AdminProtectedRoute>
+        <AdminLayout />
+      </AdminProtectedRoute>
+    }
+  >
+    <Route index element={<AdminDashboard />} />
+    <Route path="movies" element={<AdminMovieList />} />
+    <Route path="movies/create" element={<AdminMovieForm />} />
+    <Route path="movies/:id/edit" element={<AdminMovieForm />} />
+  </Route>
+);
 
-export default AdminRoutes;
+export default adminRoutes;
+```
+
+For flat routes (public, protected), use a fragment:
+
+```typescript
+// src/routes/public.tsx
+const publicRoutes = (
+  <>
+    <Route path="/login" element={<LoginPage />} />
+    <Route path="/register" element={<RegisterPage />} />
+  </>
+);
+
+export default publicRoutes;
 ```
 
 ### Composition (`src/routes/index.tsx`)
@@ -255,17 +268,17 @@ export default AdminRoutes;
 ```typescript
 import { Routes, Route } from "react-router-dom";
 import MainLayout from "@/components/MainLayout";
-import PublicRoutes from "@/routes/public";
-import ProtectedRoutes from "@/routes/protected";
-import AdminRoutes from "@/routes/admin";
+import publicRoutes from "@/routes/public";
+import protectedRoutes from "@/routes/protected";
+import adminRoutes from "@/routes/admin";
 
 function AppRoutes() {
   return (
     <Routes>
       <Route element={<MainLayout />}>
-        <PublicRoutes />
-        <ProtectedRoutes />
-        <AdminRoutes />
+        {publicRoutes}
+        {protectedRoutes}
+        {adminRoutes}
       </Route>
     </Routes>
   );
@@ -288,10 +301,11 @@ export default App;
 
 ### Route Module Rules
 
-- **Public**: no auth required, no guard wrapper
-- **Protected**: wraps each page in `<ProtectedRoute>`
-- **Admin**: wraps the parent path in `<AdminProtectedRoute><AdminLayout /></AdminProtectedRoute>`, children are bare
-- **Lazy loading**: `React.lazy()` per page, co-located in the route file that uses it
+- **Public**: no auth required, exports `<>...</>` fragment with individual `<Route>` elements
+- **Protected**: wraps each page in `<ProtectedRoute>`, exports `<>...</>` fragment
+- **Admin**: wraps parent path in `<AdminProtectedRoute><AdminLayout /></AdminProtectedRoute>`, exports a single `<Route>` (not fragment, because it's a structural route)
+- **Exports JSX constants**, NOT components — React Router v6 `<Routes>` only accepts `<Route>` or `<>` children
+- **Lazy loading**: `React.lazy()` per page, co-located in the route file
 - **Suspense**: handled by `MainLayout` once (wraps `<Outlet />`)
 - **When adding a page**: import + add `<Route>` to the correct route file — never modify `App.tsx` or `index.tsx`
 - **When a route file exceeds ~80 lines**: consider splitting by sub-domain (e.g., `admin/movies.routes.tsx`)
