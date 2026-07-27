@@ -33,9 +33,9 @@
       "description": "Crear un nuevo skill",
       "template": "Load the write-a-skill skill. I want to create a new skill."
     },
-    "create-ticket": {
-      "description": "Crear ticket en xenodocIA",
-      "template": "Load the create-ticket skill and create a new ticket."
+    "create-ticket-roadmap": {
+      "description": "Crear ticket en roadmap (status: roadmap)",
+      "template": "Load the create-ticket-roadmap skill and create a new roadmap ticket."
     },
     "add-comment": {
       "description": "Agregar comentario a ticket",
@@ -56,6 +56,10 @@
     "park": {
       "description": "Capturar idea de ticket y rutearla",
       "template": "Load the park skill. Interview with 3 questions, draft user story, route to destination."
+    },
+    "create-ticket-backlog": {
+      "description": "Crear ticket de prioridad en el backlog",
+      "template": "Load the create-ticket-backlog skill. Interview with 3 questions, draft user story, route to destination."
     },
     "planning": {
       "description": "Planificar proyectos, fases y ProjectItems",
