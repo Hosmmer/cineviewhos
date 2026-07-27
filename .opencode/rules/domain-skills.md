@@ -17,7 +17,7 @@ Matches: `frontend/**/*`, `xenodocIA/frontend/**/*`
 
 | Skill | When |
 |-------|------|
-| `react-CineViewHos` | Always — React 18 + Vite + TypeScript patterns |
+| `react` | Always — React 18 + Vite + TypeScript patterns |
 | `tailwind-design` | Always — UI design system, dark cinema theme |
 | `frontend-testing` | Writing/changing tests |
 
@@ -27,7 +27,7 @@ Matches: `backend/**/*`, `xenodocIA/**/*.py`
 
 | Skill | When |
 |-------|------|
-| `django-cineviewhos` | Always — Django + DRF service-layer patterns |
+| `django` | Always — Django + DRF service-layer patterns |
 | `backend-testing` | Writing/changing tests |
 
 ## Architecture & Design
