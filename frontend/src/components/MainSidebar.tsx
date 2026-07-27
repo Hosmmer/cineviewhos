@@ -8,6 +8,7 @@ import {
   X,
   Menu,
   Home,
+  Ticket,
 } from "lucide-react";
 import * as AllIcons from "./lucide-icons.generated";
 import type { Module } from "@/types/modules";
@@ -202,6 +203,19 @@ function MainSidebar() {
         >
           <Home className="w-5 h-5 shrink-0" />
           {!collapsed && "Home"}
+        </Link>
+
+        <Link
+          to="/my-reservations"
+          className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors no-underline ${
+            location.pathname === "/my-reservations"
+              ? "bg-red-600/10 text-red-500 border-l-2 border-red-500"
+              : "text-gray-300 hover:text-white hover:bg-gray-800 border-l-2 border-transparent"
+          } ${collapsed ? "justify-center" : ""}`}
+          title={collapsed ? "Mis Reservas" : undefined}
+        >
+          <Ticket className="w-5 h-5 shrink-0" />
+          {!collapsed && "Mis Reservas"}
         </Link>
 
         {modules?.map((mod) => (

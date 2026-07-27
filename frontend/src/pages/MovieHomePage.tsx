@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { fetchMovies } from "@/services/movieService";
 import MovieCard from "@/components/MovieCard";
 import type { PaginatedResponse, MovieList } from "@/types/movies";
@@ -9,6 +10,8 @@ interface HealthResponse {
 }
 
 function MovieHomePage() {
+  const navigate = useNavigate();
+
   const { data: health } = useQuery<HealthResponse>({
     queryKey: ["django-health"],
     queryFn: () => djangoApi.get("/health/").then((r) => r.data),
@@ -73,7 +76,11 @@ function MovieHomePage() {
       ) : data && data.results.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {data.results.map((movie) => (
-            <MovieCard key={movie.id} movie={movie} />
+            <MovieCard
+              key={movie.id}
+              movie={movie}
+              onClick={() => navigate(`/movies/${movie.id}`)}
+            />
           ))}
         </div>
       ) : (
