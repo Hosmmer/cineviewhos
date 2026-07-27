@@ -8,9 +8,15 @@ function formatPrice(price: string): string {
   }).format(Number(price));
 }
 
-function MovieCard({ movie }: { movie: MovieList }) {
+function MovieCard({
+  movie,
+  onClick,
+}: {
+  movie: MovieList;
+  onClick?: () => void;
+}) {
   return (
-    <div className="group cursor-pointer">
+    <div className="group cursor-pointer" onClick={onClick}>
       <div className="aspect-[2/3] bg-gray-800 rounded-xl border border-gray-700/50 overflow-hidden relative">
         {movie.poster ? (
           <img

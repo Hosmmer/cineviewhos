@@ -41,6 +41,27 @@ Also verify migrations are committed (`git ls-files`).
 CI (GitHub Actions): 3 jobs — lint, frontend, backend. All must be green.
 CI fails → read log → fix (no workarounds) → push → wait → merge.
 
+## Domain Documentation (MANDATORY)
+
+Every domain touched by a ticket MUST have documentation in the wiki BEFORE the ticket moves to `ready-to-deploy`:
+
+```
+wiki/contexts/{domain}/
+├── CONTEXT.md      # Glossary: terms, entities, API, business rules
+└── CHANGELOG.md    # What changed and when
+```
+
+### New Domain Checklist
+
+When a ticket introduces a NEW domain:
+1. Create `wiki/contexts/{domain}/CONTEXT.md` with full glossary
+2. Create `wiki/contexts/{domain}/CHANGELOG.md`
+3. Add domain to `wiki/contexts/CONTEXT-MAP.md` with dependencies
+4. Create domain label via `POST /api/labels/`
+5. Reference the new domain in `wiki/contexts/cineviewhos/CONTEXT.md`
+
+Existing domains: auth, movies, reservations, modules.
+
 ## Never
 
 - Write code without `in-progress` status

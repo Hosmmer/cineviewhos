@@ -41,7 +41,7 @@ These are **logical paths** for the content API, not filesystem locations.
 
 ## Skills auto-discovered
 
-- **Opencode-global**: `~/.config/opencode/skills/{devk,gcpush,gpmain,gpr,grill-me,grill-with-docs,handoff,write-a-skill,add-comment,create-ticket,promote,update-status,cineviewhos-deploy,park,planning}/SKILL.md`
+- **Opencode-global**: `~/.config/opencode/skills/{devk,gcpush,gpmain,gpr,grill-me,grill-with-docs,handoff,write-a-skill,add-comment,create-ticket,create-ticket-backlog,promote,update-status,cineviewhos-deploy,park,planning}/SKILL.md`
 - **Repo-level**: Each repo's `.claude/skills/` directory
 
 ## Skill reference files

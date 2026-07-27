@@ -66,17 +66,11 @@ Project manifest — single source of truth for all skills and agents.
 
 - **No grey UI** — `btn-secondary`, `text-muted`, `#94A3B8`, `#8E8E93`, `rgba(142,142,147` are banned
 - **No emojis in UI** — SVG or `bi bi-*` icons only
-- **"Anular" never "Cancelar"** — voiding in POS is "Anular orden"
 - **Spec/Plan approval gates** — never skip. User must explicitly approve spec and plan before code is written.
-- **Documentation plan gate** — present a documentation plan (specs to promote, ADRs, CONTEXT.md changes) and get explicit approval before executing.
+- **Documentation plan gate** — present a documentation plan (specs to promote, ADRs, CONTEXT.md changes, CHANGELOG updates) and get explicit approval before executing.
+- **Documentation MANDATORY after QA** — after QA passes, you MUST update CONTEXT.md, CHANGELOG.md, promote specs, and record ADRs before pushing. Never move to ready-to-deploy without docs.
 - **Surgical scope** — touch ONLY what's asked, no CSS/selector creep
 - **Free input for extensible fields** — never hardcode dropdowns for dynamic string data
-- **One open order per table** — POS invariant (XE-46/ADR-0006)
-- **Pizza halves vs portions** — `is_halvable` and `is_portionable` are mutually exclusive
-- **Modifier snapshot FK** — `LineItemModifier.modifier` FK only accepts `products.Modifier`
-- **POS sheets** — `.pos-sheet--hide-bars` + sticky header + internal scroll
-- **POS menu must match Admin config** — no divergence allowed
-- **LineItem soft-delete pending** — hard-delete causes data loss on table switch; deferred
 
 ## Architecture Rules
 
@@ -106,11 +100,11 @@ Project manifest — single source of truth for all skills and agents.
 ### Domain Skills Map
 | Paths | Skills loaded |
 |-------|--------------|
-| `backend/**/*` | `django-cineviewhos` (patterns in `backend/.opencode/skills/django/references/`) + `backend-testing` |
-| `frontend/**/*` | `react-CineViewHos` (patterns in `frontend/.opencode/skills/react/references/`) + `tailwind-design` + `frontend-testing` |
-| `xenodocIA/**/*` | `django-cineviewhos` + `react-CineViewHos` + `backend-testing` + `frontend-testing` |
+| `backend/**/*` | `django` (patterns in `.opencode/skills/django/references/`) + `backend-testing` |
+| `frontend/**/*` | `react` (patterns in `.opencode/skills/react/references/`) + `tailwind-design` + `frontend-testing` |
+| `xenodocIA/**/*` | `django` + `react` + `backend-testing` + `frontend-testing` |
 | Any | `codebase-design`, `domain-modeling` |
 
 ### Skill Reference Files (deep-dive patterns loaded on demand)
-- **Backend**: `backend/.opencode/skills/django/references/` — models-orm (544L), drf-serializers (318L), viewsets-views (433L), testing-django (420L)
-- **Frontend**: `frontend/.opencode/skills/react/references/` — hooks-patterns (309L), state-management (281L), testing-react (334L), performance (260L), i18n (53L), component-architecture (125L), metronic-plugin-init (53L)
+- **Backend**: `.opencode/skills/django/references/` — models-orm, drf-serializers, viewsets-views, testing-django
+- **Frontend**: `.opencode/skills/react/references/` — hooks-patterns, state-management, testing-react, performance, i18n, component-architecture, metronic-plugin-init
