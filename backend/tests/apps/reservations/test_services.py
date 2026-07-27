@@ -4,7 +4,7 @@ from django.utils import timezone
 from datetime import timedelta
 
 from apps.domains.movies.models import Genre, Movie
-from apps.domains.reservations.models import Funcion, Reserva, ReservaSeat, Sala, Seat
+from apps.domains.reservations.models import Funcion, Reserva, Sala, Seat
 from apps.domains.reservations.services import FuncionService, ReservaService, SalaService
 
 User = get_user_model()
