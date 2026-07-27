@@ -12,6 +12,12 @@ triggers:
   - design
   - performance
   - testing
+  - architecture
+  - structure
+  - organization
+  - folders
+  - scaling
+  - features
 ---
 
 # React CineViewHos
@@ -120,6 +126,28 @@ DO NOT add extra context providers or state management libraries.
 
 Every admin entity: `Admin{Entity}List.tsx` (table + delete modal + pagination) + `Admin{Entity}Form.tsx` (create = no id, edit = id from useParams).
 
+## Routing
+
+Routes are modularized by auth level in `src/routes/`:
+
+```
+src/routes/
+├── index.tsx            # Composes all groups under MainLayout
+├── public.tsx           # No auth: /login, /register, /password/*
+├── protected.tsx        # Auth: /, /movies/:id, /profile, etc.
+└── admin.tsx            # Staff: /admin/** CRUD
+```
+
+**App.tsx** is thin (3 lines): `import AppRoutes from "@/routes"; function App() { return <AppRoutes />; }`
+
+### Adding a new route:
+1. Choose the correct route file (public / protected / admin)
+2. Add `const NewPage = lazy(() => import("@/pages/NewPage"));`
+3. Add `<Route path="/new-path" element={<NewPage />} />` (wrap in `ProtectedRoute` if needed)
+4. NEVER touch `App.tsx` or `routes/index.tsx`
+
+Full pattern documented in `references/architecture.md`.
+
 ## Deep-Dive References
 
 Read BEFORE writing code:
@@ -132,3 +160,4 @@ Read BEFORE writing code:
 | Tests | `references/testing-react.md` |
 | Performance, lazy loading | `references/performance.md` |
 | i18n | `references/i18n.md` |
+| **Architecture** | `references/architecture.md` — project structure, feature folders, scaling rules |

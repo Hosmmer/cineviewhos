@@ -14,6 +14,11 @@ triggers:
   - api
   - database
   - testing
+  - architecture
+  - structure
+  - organization
+  - folders
+  - scaling
 ---
 
 # Django CineViewHos
@@ -115,3 +120,4 @@ Read the relevant file BEFORE writing code:
 | Serializers | `references/drf-serializers.md` — naming, related data, validation |
 | Views/ViewSets | `references/viewsets-views.md` — admin/public split, permissions, actions |
 | Tests | `references/testing-django.md` — pytest fixtures, service/view test patterns |
+| **Architecture** | `references/architecture.md` — project structure, scaling rules, service splitting |
