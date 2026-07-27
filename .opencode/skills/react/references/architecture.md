@@ -7,6 +7,7 @@
 3. **No cross-feature imports**: features should not import from each other
 4. **No barrel files**: import directly (Vite tree-shaking)
 5. **Flat when small, grouped when large**: start flat, extract features when they grow
+6. **Domain documentation FIRST**: before creating a new feature, ensure `wiki/contexts/{domain}/CONTEXT.md` exists with glossary. Check `wiki/contexts/CONTEXT-MAP.md` for existing domains.
 
 ## Project Structure — Current
 

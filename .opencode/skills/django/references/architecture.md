@@ -6,6 +6,7 @@
 2. **Thin APIs**: views should only validate, call service, return response
 3. **Data flow**: Request → Serializer → Service → Model → ServiceResult → Response
 4. **Never**: business logic in `save()`, signals for domain logic, fat serializers
+5. **Domain documentation FIRST**: before creating a new app, create `wiki/contexts/{domain}/CONTEXT.md` with glossary. Check `wiki/contexts/CONTEXT-MAP.md` for existing domains.
 
 ## Project Structure — Current & Growth
 
