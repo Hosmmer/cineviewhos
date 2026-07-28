@@ -7,6 +7,7 @@ import {
   LogOut,
   ChevronDown,
   X,
+  Settings,
 } from "lucide-react";
 
 interface UserDrawerProps {
@@ -161,6 +162,23 @@ function UserDrawer({ isOpen, onClose }: UserDrawerProps) {
       ],
     },
   ];
+
+  if (user?.is_staff) {
+    menuGroups.push({
+      id: "configuracion",
+      label: "Configuracion",
+      icon: <Settings className="w-5 h-5" />,
+      items: [
+        {
+          id: "admin-panel",
+          label: "Panel Configuracion",
+          icon: <Settings className="w-4 h-4" />,
+          action: "link",
+          to: "/settings",
+        },
+      ],
+    });
+  }
 
   if (!isOpen) return null;
 

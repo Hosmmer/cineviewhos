@@ -38,10 +38,21 @@ class ModuleViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == "list":
+            if self.request.query_params.get("flat") == "true":
+                return ModuleSerializer
             return ModuleTreeSerializer
         return ModuleSerializer
 
     def list(self, request, *args, **kwargs):
+        if request.query_params.get("flat") == "true":
+            queryset = Module.objects.filter(is_active=True).order_by("parent", "order", "name")
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+
         service = self.service_class()
         root_modules = service.get_tree_for_user(request.user)
 

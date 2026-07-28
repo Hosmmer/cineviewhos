@@ -7,15 +7,19 @@ function PasswordResetPage() {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     try {
       await resetPassword(email);
       setSent(true);
     } catch {
       setError("No se pudo enviar el email. Verifica la dirección.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -105,9 +109,10 @@ function PasswordResetPage() {
 
           <button
             type="submit"
-            className="w-full py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-semibold tracking-wide transition-all shadow-lg shadow-red-600/25"
+            disabled={loading}
+            className="w-full py-2.5 px-4 bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-sm font-semibold tracking-wide transition-all shadow-lg shadow-red-600/25"
           >
-            Enviar Instrucciones
+            {loading ? "Enviando..." : "Enviar Instrucciones"}
           </button>
 
           <div className="text-center text-sm pt-2 border-t border-gray-700/50">

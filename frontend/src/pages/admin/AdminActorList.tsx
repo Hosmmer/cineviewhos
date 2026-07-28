@@ -57,7 +57,7 @@ function AdminActorList() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-white">Actors</h1>
         <button
-          onClick={() => navigate("/admin/actors/create")}
+          onClick={() => navigate("/movies/actors/create")}
           className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm font-medium"
         >
           + New Actor
@@ -105,7 +105,7 @@ function AdminActorList() {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() =>
-                          navigate(`/admin/actors/${actor.id}/edit`)
+                          navigate(`/movies/actors/${actor.id}/edit`)
                         }
                         className="px-3 py-1 text-xs bg-gray-700 text-gray-300 rounded hover:bg-gray-600 transition-colors"
                       >

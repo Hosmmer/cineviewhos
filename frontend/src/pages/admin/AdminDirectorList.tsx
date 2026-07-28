@@ -60,7 +60,7 @@ function AdminDirectorList() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-white">Directors</h1>
         <button
-          onClick={() => navigate("/admin/directors/create")}
+          onClick={() => navigate("/movies/directors/create")}
           className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm font-medium"
         >
           + New Director
@@ -110,7 +110,7 @@ function AdminDirectorList() {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() =>
-                          navigate(`/admin/directors/${director.id}/edit`)
+                          navigate(`/movies/directors/${director.id}/edit`)
                         }
                         className="px-3 py-1 text-xs bg-gray-700 text-gray-300 rounded hover:bg-gray-600 transition-colors"
                       >

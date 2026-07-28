@@ -6,6 +6,7 @@ export interface User {
   last_name?: string;
   is_staff?: boolean;
   avatar?: string;
+  roles?: number[];
 }
 
 export interface LoginCredentials {

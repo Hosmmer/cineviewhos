@@ -81,7 +81,7 @@ function AdminMovieForm() {
     mutationFn: createMovie,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-movies"] });
-      navigate("/admin/movies");
+      navigate("/movies");
     },
   });
 
@@ -91,7 +91,7 @@ function AdminMovieForm() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-movies"] });
       queryClient.invalidateQueries({ queryKey: ["admin-movie", id] });
-      navigate("/admin/movies");
+      navigate("/movies");
     },
   });
 
@@ -491,7 +491,7 @@ function AdminMovieForm() {
         <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
           <button
             type="button"
-            onClick={() => navigate("/admin/movies")}
+            onClick={() => navigate("/movies")}
             className="px-4 py-2 text-sm bg-gray-700 text-gray-300 rounded-md hover:bg-gray-600 transition-colors"
           >
             Cancel

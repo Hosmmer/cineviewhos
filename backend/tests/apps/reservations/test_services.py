@@ -3,9 +3,9 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from datetime import timedelta
 
-from apps.movies.models import Genre, Movie
-from apps.reservations.models import Funcion, Reserva, ReservaSeat, Sala, Seat
-from apps.reservations.services import FuncionService, ReservaService, SalaService
+from apps.domains.movies.models import Genre, Movie
+from apps.domains.reservations.models import Funcion, Reserva, Sala, Seat
+from apps.domains.reservations.services import FuncionService, ReservaService, SalaService
 
 User = get_user_model()
 

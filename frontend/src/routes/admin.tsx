@@ -1,7 +1,5 @@
 import { lazy } from "react";
 import { Route } from "react-router-dom";
-import AdminProtectedRoute from "@/components/AdminProtectedRoute";
-import AdminLayout from "@/components/AdminLayout";
 
 const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
 const AdminGenreList = lazy(() => import("@/pages/admin/AdminGenreList"));
@@ -21,40 +19,39 @@ const AdminFuncionForm = lazy(() => import("@/pages/admin/AdminFuncionForm"));
 const AdminReservationList = lazy(
   () => import("@/pages/admin/AdminReservationList"),
 );
+const AdminRoleList = lazy(() => import("@/pages/admin/AdminRoleList"));
+const AdminUserList = lazy(() => import("@/pages/admin/AdminUserList"));
+const AdminModuleList = lazy(() => import("@/pages/admin/AdminModuleList"));
 
-const adminRoutes = (
-  <Route
-    path="/admin"
-    element={
-      <AdminProtectedRoute>
-        <AdminLayout />
-      </AdminProtectedRoute>
-    }
-  >
-    <Route index element={<AdminDashboard />} />
-    <Route path="genres" element={<AdminGenreList />} />
-    <Route path="genres/create" element={<AdminGenreForm />} />
-    <Route path="genres/:id/edit" element={<AdminGenreForm />} />
+const adminChildren = (
+  <>
+    <Route path="settings" element={<AdminDashboard />} />
+    <Route path="settings/roles" element={<AdminRoleList />} />
+    <Route path="settings/users" element={<AdminUserList />} />
+    <Route path="settings/modules" element={<AdminModuleList />} />
     <Route path="movies" element={<AdminMovieList />} />
     <Route path="movies/create" element={<AdminMovieForm />} />
     <Route path="movies/:id/edit" element={<AdminMovieForm />} />
-    <Route path="directors" element={<AdminDirectorList />} />
-    <Route path="directors/create" element={<AdminDirectorForm />} />
-    <Route path="directors/:id/edit" element={<AdminDirectorForm />} />
-    <Route path="authors" element={<AdminAuthorList />} />
-    <Route path="authors/create" element={<AdminAuthorForm />} />
-    <Route path="authors/:id/edit" element={<AdminAuthorForm />} />
-    <Route path="actors" element={<AdminActorList />} />
-    <Route path="actors/create" element={<AdminActorForm />} />
-    <Route path="actors/:id/edit" element={<AdminActorForm />} />
-    <Route path="salas" element={<AdminSalaList />} />
-    <Route path="salas/create" element={<AdminSalaForm />} />
-    <Route path="salas/:id/edit" element={<AdminSalaForm />} />
-    <Route path="funciones" element={<AdminFuncionList />} />
-    <Route path="funciones/create" element={<AdminFuncionForm />} />
-    <Route path="funciones/:id/edit" element={<AdminFuncionForm />} />
-    <Route path="reservations" element={<AdminReservationList />} />
-  </Route>
+    <Route path="movies/directors" element={<AdminDirectorList />} />
+    <Route path="movies/directors/create" element={<AdminDirectorForm />} />
+    <Route path="movies/directors/:id/edit" element={<AdminDirectorForm />} />
+    <Route path="movies/authors" element={<AdminAuthorList />} />
+    <Route path="movies/authors/create" element={<AdminAuthorForm />} />
+    <Route path="movies/authors/:id/edit" element={<AdminAuthorForm />} />
+    <Route path="movies/actors" element={<AdminActorList />} />
+    <Route path="movies/actors/create" element={<AdminActorForm />} />
+    <Route path="movies/actors/:id/edit" element={<AdminActorForm />} />
+    <Route path="genres" element={<AdminGenreList />} />
+    <Route path="genres/create" element={<AdminGenreForm />} />
+    <Route path="genres/:id/edit" element={<AdminGenreForm />} />
+    <Route path="reservations/rooms" element={<AdminSalaList />} />
+    <Route path="reservations/rooms/create" element={<AdminSalaForm />} />
+    <Route path="reservations/rooms/:id/edit" element={<AdminSalaForm />} />
+    <Route path="reservations/showtimes" element={<AdminFuncionList />} />
+    <Route path="reservations/showtimes/create" element={<AdminFuncionForm />} />
+    <Route path="reservations/showtimes/:id/edit" element={<AdminFuncionForm />} />
+    <Route path="reservations/bookings" element={<AdminReservationList />} />
+  </>
 );
 
-export default adminRoutes;
+export default adminChildren;

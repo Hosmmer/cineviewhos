@@ -94,7 +94,7 @@ function AdminMovieList() {
             </svg>
           </div>
           <button
-            onClick={() => navigate("/admin/movies/create")}
+            onClick={() => navigate("/movies/create")}
             className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm font-medium whitespace-nowrap"
           >
             + New Movie
@@ -209,7 +209,7 @@ function AdminMovieList() {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() =>
-                          navigate(`/admin/movies/${movie.id}/edit`)
+                          navigate(`/movies/${movie.id}/edit`)
                         }
                         className="px-3 py-1 text-xs bg-gray-700 text-gray-300 rounded hover:bg-gray-600 transition-colors"
                       >

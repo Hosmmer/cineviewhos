@@ -30,7 +30,7 @@ function AdminSalaList() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-white">Salas</h1>
         <button
-          onClick={() => navigate("/admin/salas/create")}
+          onClick={() => navigate("/reservations/salas/create")}
           className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
         >
           Nueva Sala
@@ -70,7 +70,7 @@ function AdminSalaList() {
                   <td className="px-4 py-3 text-gray-300">{s.active_funcion_count}</td>
                   <td className="px-4 py-3 text-right">
                     <button
-                      onClick={() => navigate(`/admin/salas/${s.id}/edit`)}
+                      onClick={() => navigate(`/reservations/salas/${s.id}/edit`)}
                       className="px-3 py-1 text-xs text-blue-400 hover:text-blue-300 mr-2"
                     >
                       Editar

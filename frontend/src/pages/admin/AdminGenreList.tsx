@@ -57,7 +57,7 @@ function AdminGenreList() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-white">Genres</h1>
         <button
-          onClick={() => navigate("/admin/genres/create")}
+          onClick={() => navigate("/genres/create")}
           className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm font-medium"
         >
           + New Genre
@@ -91,7 +91,7 @@ function AdminGenreList() {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() =>
-                          navigate(`/admin/genres/${genre.id}/edit`)
+                          navigate(`/genres/${genre.id}/edit`)
                         }
                         className="px-3 py-1 text-xs bg-gray-700 text-gray-300 rounded hover:bg-gray-600 transition-colors"
                       >
