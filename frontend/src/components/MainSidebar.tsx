@@ -8,7 +8,6 @@ import {
   X,
   Menu,
   Home,
-  Ticket,
 } from "lucide-react";
 import * as AllIcons from "./lucide-icons.generated";
 import type { Module } from "@/types/modules";
@@ -53,6 +52,8 @@ const SidebarGroup = memo(function SidebarGroup({
     : !closedByUser && hasActiveChild ? true : expanded;
   const hasChildren = module.children.length > 0;
 
+  const active = activePath.startsWith(module.route || "") || (module.route === "/admin" && activePath === "/admin");
+
   useEffect(() => {
     if (hasActiveChild) {
       setClosedByUser(false);
@@ -69,6 +70,23 @@ const SidebarGroup = memo(function SidebarGroup({
       setClosedByUser(false);
     }
   };
+
+  if (!hasChildren && module.route) {
+    return (
+      <Link
+        to={module.route}
+        title={collapsed ? module.name : undefined}
+        className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors no-underline ${
+          active
+            ? "bg-red-600/10 text-red-500 border-l-2 border-red-500"
+            : "text-gray-300 hover:text-white hover:bg-gray-800 border-l-2 border-transparent"
+        } ${collapsed ? "justify-center" : ""}`}
+      >
+        {getIcon(module.icon, "w-5 h-5 shrink-0")}
+        {!collapsed && <span className="flex-1 text-left truncate">{module.name}</span>}
+      </Link>
+    );
+  }
 
   return (
     <div className={collapsed && isExpanded && hasChildren ? "bg-gray-800/30 rounded-lg mx-0.5 mb-1" : ""}>
@@ -203,19 +221,6 @@ function MainSidebar() {
         >
           <Home className="w-5 h-5 shrink-0" />
           {!collapsed && "Home"}
-        </Link>
-
-        <Link
-          to="/my-reservations"
-          className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors no-underline ${
-            location.pathname === "/my-reservations"
-              ? "bg-red-600/10 text-red-500 border-l-2 border-red-500"
-              : "text-gray-300 hover:text-white hover:bg-gray-800 border-l-2 border-transparent"
-          } ${collapsed ? "justify-center" : ""}`}
-          title={collapsed ? "Mis Reservas" : undefined}
-        >
-          <Ticket className="w-5 h-5 shrink-0" />
-          {!collapsed && "Mis Reservas"}
         </Link>
 
         {modules?.map((mod) => (

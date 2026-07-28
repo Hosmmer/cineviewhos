@@ -5,6 +5,7 @@ import type {
   User,
   AuthTokens,
 } from "@/types/auth";
+import type { UserAdmin } from "@/types/modules";
 
 export async function loginUser(
   credentials: LoginCredentials,
@@ -85,4 +86,14 @@ export function loadAuthData(): {
     clearAuthData();
     return { user: null, tokens: null };
   }
+}
+
+export async function fetchUsers(): Promise<UserAdmin[]> {
+  const { data } = await djangoApi.get<{ results: UserAdmin[] }>("/admin/users/");
+  return data.results;
+}
+
+export async function updateUserRoles(id: number, roles: number[]): Promise<UserAdmin> {
+  const { data } = await djangoApi.patch<UserAdmin>(`/admin/users/${id}/`, { roles });
+  return data;
 }

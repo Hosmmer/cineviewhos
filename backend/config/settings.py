@@ -115,6 +115,9 @@ DEFAULT_FROM_EMAIL = os.environ.get(
     "DEFAULT_FROM_EMAIL", EMAIL_HOST_USER or "noreply@cineviewhos.com"
 )
 
+DOMAIN = os.environ.get("DOMAIN", "localhost:3000")
+SITE_NAME = os.environ.get("SITE_NAME", "CineViewHos")
+
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "static"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"

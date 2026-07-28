@@ -36,7 +36,7 @@ function AdminGenreForm() {
     mutationFn: createGenre,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-genres"] });
-      navigate("/admin/genres");
+      navigate("/genres");
     },
   });
 
@@ -44,7 +44,7 @@ function AdminGenreForm() {
     mutationFn: (data: { name: string }) => updateGenre(Number(id), data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-genres"] });
-      navigate("/admin/genres");
+      navigate("/genres");
     },
   });
 
@@ -125,7 +125,7 @@ function AdminGenreForm() {
         <div className="flex justify-end gap-3 pt-2">
           <button
             type="button"
-            onClick={() => navigate("/admin/genres")}
+            onClick={() => navigate("/genres")}
             className="px-4 py-2 text-sm bg-gray-700 text-gray-300 rounded-md hover:bg-gray-600 transition-colors"
           >
             Cancel

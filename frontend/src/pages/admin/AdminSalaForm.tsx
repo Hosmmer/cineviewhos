@@ -34,7 +34,7 @@ function AdminSalaForm() {
         : createSala({ name, rows, cols }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-salas"] });
-      navigate("/admin/salas");
+      navigate("/reservations/salas");
     },
     onError: (err: any) => {
       setError(err?.response?.data?.detail ?? "Error al guardar.");
@@ -91,7 +91,7 @@ function AdminSalaForm() {
 
         <div className="flex gap-3 pt-4">
           <button
-            onClick={() => navigate("/admin/salas")}
+            onClick={() => navigate("/reservations/salas")}
             className="px-4 py-2 text-sm text-gray-300 hover:text-white border border-gray-700 rounded-lg"
           >
             Cancelar

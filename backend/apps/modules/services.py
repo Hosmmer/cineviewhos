@@ -26,13 +26,19 @@ class ModuleService(BaseService):
         return user.roles.filter(id__in=module.roles.values_list("id", flat=True)).exists()
 
     def create_module(self, **data) -> ServiceResult:
+        roles = data.pop("roles", [])
         module = Module.objects.create(**data)
+        if roles:
+            module.roles.set(roles)
         return self.success(data={"id": module.id, "name": module.name})
 
     def update_module(self, module, **data) -> ServiceResult:
+        roles = data.pop("roles", None)
         for field, value in data.items():
             setattr(module, field, value)
         module.save()
+        if roles is not None:
+            module.roles.set(roles)
         return self.success(data={"id": module.id, "name": module.name})
 
     def delete_module(self, module) -> ServiceResult:
