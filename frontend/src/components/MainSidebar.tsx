@@ -20,7 +20,7 @@ const SPANISH_LABELS: Record<string, string> = {
   rooms: "Salas",
   showtimes: "Funciones",
   bookings: "Reservas",
-  "Display Config": "Config. Display",
+  "Display Config": "Configuracion Display",
 };
 
 function translate(module: Module): Module {
