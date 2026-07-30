@@ -12,6 +12,25 @@ import {
 import * as AllIcons from "./lucide-icons.generated";
 import type { Module } from "@/types/modules";
 
+const SPANISH_LABELS: Record<string, string> = {
+  Movies: "Pelicula",
+  Directors: "Directores",
+  Authors: "Autores",
+  Actors: "Actores",
+  rooms: "Salas",
+  showtimes: "Funciones",
+  bookings: "Reservas",
+  "Display Config": "Config. Display",
+};
+
+function translate(module: Module): Module {
+  const name = SPANISH_LABELS[module.name] || module.name;
+  const children = module.children
+    ? module.children.map((c) => ({ ...c, name: SPANISH_LABELS[c.name] || c.name }))
+    : module.children;
+  return { ...module, name, children };
+}
+
 const FallbackIcon = ({ className }: { className?: string }) => (
   <svg
     className={className}
@@ -226,7 +245,7 @@ function MainSidebar() {
         {modules?.map((mod) => (
           <SidebarGroup
             key={mod.id}
-            module={mod}
+            module={translate(mod)}
             activePath={location.pathname}
             collapsed={collapsed}
           />
