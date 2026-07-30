@@ -26,12 +26,12 @@ function AdminFuncionList() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-white">Funciones</h1>
-        <button
-          onClick={() => navigate("/reservations/funciones/create")}
-          className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
-        >
-          Nueva Funcion
-        </button>
+          <button
+            onClick={() => navigate("/reservations/showtimes/create")}
+            className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
+          >
+            Nueva Funcion
+          </button>
       </div>
 
       {isLoading ? (
@@ -45,6 +45,7 @@ function AdminFuncionList() {
               <tr>
                 <th className="px-4 py-3 text-gray-400 font-medium">Pelicula</th>
                 <th className="px-4 py-3 text-gray-400 font-medium">Sala</th>
+                <th className="px-4 py-3 text-gray-400 font-medium">Formatos</th>
                 <th className="px-4 py-3 text-gray-400 font-medium">Fecha/Hora</th>
                 <th className="px-4 py-3 text-gray-400 font-medium">Estado</th>
                 <th className="px-4 py-3 text-gray-400 font-medium text-right">Acciones</th>
@@ -56,6 +57,11 @@ function AdminFuncionList() {
                   <td className="px-4 py-3 text-white">{f.movie_title}</td>
                   <td className="px-4 py-3 text-gray-300">{f.sala_name}</td>
                   <td className="px-4 py-3 text-gray-300">
+                    {f.formats && f.formats.length > 0
+                      ? f.formats.map((fmt) => fmt.name).join(", ")
+                      : "\u2014"}
+                  </td>
+                  <td className="px-4 py-3 text-gray-300">
                     {new Date(f.start_time).toLocaleString("es-CO", { dateStyle: "long", timeStyle: "short" })}
                   </td>
                   <td className="px-4 py-3">
@@ -64,7 +70,7 @@ function AdminFuncionList() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button onClick={() => navigate(`/reservations/funciones/${f.id}/edit`)} className="px-3 py-1 text-xs text-blue-400 hover:text-blue-300 mr-2">Editar</button>
+                    <button onClick={() => navigate(`/reservations/showtimes/${f.id}/edit`)} className="px-3 py-1 text-xs text-blue-400 hover:text-blue-300 mr-2">Editar</button>
                     <button onClick={() => deleteMutation.mutate(f.id)} className="px-3 py-1 text-xs text-red-400 hover:text-red-300">Desactivar</button>
                   </td>
                 </tr>

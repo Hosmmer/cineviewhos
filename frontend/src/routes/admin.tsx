@@ -19,6 +19,8 @@ const AdminFuncionForm = lazy(() => import("@/pages/admin/AdminFuncionForm"));
 const AdminReservationList = lazy(
   () => import("@/pages/admin/AdminReservationList"),
 );
+const AdminFormatList = lazy(() => import("@/pages/admin/AdminFormatList"));
+const AdminFormatForm = lazy(() => import("@/pages/admin/AdminFormatForm"));
 const AdminRoleList = lazy(() => import("@/pages/admin/AdminRoleList"));
 const AdminUserList = lazy(() => import("@/pages/admin/AdminUserList"));
 const AdminModuleList = lazy(() => import("@/pages/admin/AdminModuleList"));
@@ -51,6 +53,9 @@ const adminChildren = (
     <Route path="reservations/showtimes/create" element={<AdminFuncionForm />} />
     <Route path="reservations/showtimes/:id/edit" element={<AdminFuncionForm />} />
     <Route path="reservations/bookings" element={<AdminReservationList />} />
+    <Route path="reservations/formats" element={<AdminFormatList />} />
+    <Route path="reservations/formats/create" element={<AdminFormatForm />} />
+    <Route path="reservations/formats/:id/edit" element={<AdminFormatForm />} />
   </>
 );
 

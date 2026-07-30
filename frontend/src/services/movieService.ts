@@ -11,6 +11,7 @@ import type {
   Movie,
   MovieFormData,
   MovieList,
+  MovieDisplayConfig,
   PaginatedResponse,
 } from "@/types/movies";
 
@@ -194,4 +195,24 @@ export async function updateActor(
 
 export async function deleteActor(id: number): Promise<void> {
   await djangoApi.delete(`/admin/actors/${id}/`);
+}
+
+export async function fetchMovieDisplayConfig(
+  movieId: number,
+): Promise<MovieDisplayConfig> {
+  const res = await djangoApi.get<MovieDisplayConfig>(
+    `/admin/movies/${movieId}/display-config/`,
+  );
+  return res.data;
+}
+
+export async function updateMovieDisplayConfig(
+  movieId: number,
+  data: Partial<MovieDisplayConfig>,
+): Promise<MovieDisplayConfig> {
+  const res = await djangoApi.patch<MovieDisplayConfig>(
+    `/admin/movies/${movieId}/display-config/`,
+    data,
+  );
+  return res.data;
 }

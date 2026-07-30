@@ -5,7 +5,6 @@ import {
   fetchAdminFormats,
   deleteFormat,
 } from "@/services/reservationService";
-import type { Format } from "@/types/reservations";
 
 function AdminFormatList() {
   const navigate = useNavigate();

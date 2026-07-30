@@ -87,6 +87,8 @@ function MovieDetailPage() {
     );
   }
 
+  const dc = movie.display_config;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <button
@@ -115,19 +117,19 @@ function MovieDetailPage() {
             </div>
 
             <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-4 space-y-3">
-              {movie.director_name && (
+              {(!dc || dc.show_director) && movie.director_name && (
                 <div>
                   <p className="text-xs text-gray-500 uppercase tracking-wider">Director</p>
                   <p className="text-gray-300 text-sm">{movie.director_name}</p>
                 </div>
               )}
-              {movie.author_name && (
+              {(!dc || dc.show_author) && movie.author_name && (
                 <div>
                   <p className="text-xs text-gray-500 uppercase tracking-wider">Autor</p>
                   <p className="text-gray-300 text-sm">{movie.author_name}</p>
                 </div>
               )}
-              {movie.actor_name && (
+              {(!dc || dc.show_actor) && movie.actor_name && (
                 <div>
                   <p className="text-xs text-gray-500 uppercase tracking-wider">Actor</p>
                   <p className="text-gray-300 text-sm">{movie.actor_name}</p>
@@ -141,21 +143,29 @@ function MovieDetailPage() {
           <div>
             <h1 className="text-3xl font-bold text-white">{movie.title}</h1>
             <div className="flex flex-wrap items-center gap-3 mt-3 text-sm">
-              {movie.genre_name && (
+              {(!dc || dc.show_genre) && movie.genre_name && (
                 <span className="px-2.5 py-1 bg-red-600/10 text-red-400 border border-red-600/30 rounded-full text-xs font-medium">
                   {movie.genre_name}
                 </span>
               )}
-              <span className="text-gray-400 flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5" />
-                {movie.duration_minutes} min
-              </span>
-              <span className="text-gray-400">{movie.release_year}</span>
-              <span className="text-red-400 font-semibold">{formatPrice(movie.price)}</span>
+              {(!dc || dc.show_duration) && (
+                <span className="text-gray-400 flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5" />
+                  {movie.duration_minutes} min
+                </span>
+              )}
+              {(!dc || dc.show_release_year) && (
+                <span className="text-gray-400">{movie.release_year}</span>
+              )}
+              {(!dc || dc.show_price) && (
+                <span className="text-red-400 font-semibold">{formatPrice(movie.price)}</span>
+              )}
             </div>
           </div>
 
-          <p className="text-gray-300 leading-relaxed">{movie.description}</p>
+          {(!dc || dc.show_description) && (
+            <p className="text-gray-300 leading-relaxed">{movie.description}</p>
+          )}
 
           <div className="border-t border-gray-700/50 pt-6">
             <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
@@ -211,20 +221,32 @@ function MovieDetailPage() {
                                   new Date(a.start_time).getTime() -
                                   new Date(b.start_time).getTime(),
                               )
-                              .map((f) => (
+                               .map((f) => (
                                 <button
                                   key={f.id}
                                   onClick={() =>
                                     navigate(`/movies/${id}/funcion/${f.id}/seats`)
                                   }
                                   disabled={f.available_seats === 0}
-                                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
                                     f.available_seats === 0
                                       ? "bg-gray-700/30 text-gray-600 cursor-not-allowed"
                                       : "bg-gray-700/50 text-gray-200 hover:bg-red-600 hover:text-white border border-gray-600/30 hover:border-red-600"
                                   }`}
                                 >
                                   {formatTime(f.start_time)}
+                                  {f.formats && f.formats.length > 0 && (
+                                    <span className="flex gap-1">
+                                      {f.formats.map((fmt) => (
+                                        <span
+                                          key={fmt.id}
+                                          className="text-[10px] px-1 py-0.5 rounded bg-gray-600/50 text-gray-300 border border-gray-500/30"
+                                        >
+                                          {fmt.name}
+                                        </span>
+                                      ))}
+                                    </span>
+                                  )}
                                 </button>
                               ))}
                           </div>

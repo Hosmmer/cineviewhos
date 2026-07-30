@@ -56,6 +56,7 @@ export interface Movie {
   actor_detail?: Actor;
   actor_name?: string;
   is_active: boolean;
+  display_config?: MovieDisplayConfig;
   created_at: string;
   updated_at: string;
 }
@@ -110,6 +111,17 @@ export interface ActorFormData {
   name: string;
   birth_date: string;
   city: string;
+}
+
+export interface MovieDisplayConfig {
+  show_director: boolean;
+  show_author: boolean;
+  show_actor: boolean;
+  show_description: boolean;
+  show_duration: boolean;
+  show_release_year: boolean;
+  show_price: boolean;
+  show_genre: boolean;
 }
 
 export interface PaginatedResponse<T> {
