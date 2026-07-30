@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { fetchMovie } from "@/services/movieService";
 import { fetchFunciones } from "@/services/reservationService";
 import type { Movie } from "@/types/movies";
@@ -66,7 +66,44 @@ function MovieDetailPage() {
   });
 
   const funciones = funcionesData?.results ?? [];
-  const grouped = useMemo(() => groupByDate(funciones), [funciones]);
+
+  const formatTabs = useMemo(() => {
+    const tabs: { label: string; funciones: Funcion[] }[] = [];
+    const seen = new Set<string>();
+    const sinFormato: Funcion[] = [];
+
+    for (const f of funciones) {
+      if (f.formats && f.formats.length > 0) {
+        for (const fmt of f.formats) {
+          if (!seen.has(fmt.name)) {
+            seen.add(fmt.name);
+            tabs.push({ label: fmt.name, funciones: [f] });
+          } else {
+            const tab = tabs.find((t) => t.label === fmt.name);
+            if (tab) tab.funciones.push(f);
+          }
+        }
+      } else {
+        sinFormato.push(f);
+      }
+    }
+
+    // Sort by format name
+    tabs.sort((a, b) => a.label.localeCompare(b.label));
+
+    if (sinFormato.length > 0) {
+      tabs.unshift({ label: "Sin formato", funciones: sinFormato });
+    }
+
+    return tabs;
+  }, [funciones]);
+
+  const [activeTab, setActiveTab] = useState(0);
+
+  const groupedByDate = useMemo(
+    () => groupByDate(formatTabs[activeTab]?.funciones ?? []),
+    [formatTabs, activeTab],
+  );
 
   if (movieLoading) {
     return (
@@ -186,76 +223,84 @@ function MovieDetailPage() {
                   </div>
                 ))}
               </div>
-            ) : funciones.length > 0 ? (
-              <div className="space-y-6">
-                {Array.from(grouped.entries()).map(([dayKey, dayFunciones]) => (
-                  <div key={dayKey}>
-                    <p className="text-sm font-semibold text-gray-400 mb-3 uppercase tracking-wider">
-                      {formatDate(dayFunciones[0].start_time)}
-                    </p>
-                    <div className="space-y-3">
-                      {Array.from(
-                        (() => {
-                          const m = new Map<string, Funcion[]>();
-                          for (const ff of dayFunciones) {
-                            if (!m.has(ff.sala_name)) m.set(ff.sala_name, []);
-                            m.get(ff.sala_name)!.push(ff);
-                          }
-                          return m;
-                        })().entries(),
-                      ).map(([sala, salaFunciones]) => (
-                        <div
-                          key={sala}
-                          className="bg-gray-800 border border-gray-700/50 rounded-xl p-4"
-                        >
-                          <div className="flex items-center justify-between mb-3">
-                            <p className="text-white font-medium text-sm">{sala}</p>
-                            <span className="text-xs text-gray-500">
-                              {salaFunciones[0].available_seats} asientos
-                            </span>
-                          </div>
-                          <div className="flex flex-wrap gap-2">
-                            {salaFunciones
-                              .sort(
-                                (a, b) =>
-                                  new Date(a.start_time).getTime() -
-                                  new Date(b.start_time).getTime(),
-                              )
-                               .map((f) => (
-                                <button
-                                  key={f.id}
-                                  onClick={() =>
-                                    navigate(`/movies/${id}/funcion/${f.id}/seats`)
-                                  }
-                                  disabled={f.available_seats === 0}
-                                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
-                                    f.available_seats === 0
-                                      ? "bg-gray-700/30 text-gray-600 cursor-not-allowed"
-                                      : "bg-gray-700/50 text-gray-200 hover:bg-red-600 hover:text-white border border-gray-600/30 hover:border-red-600"
-                                  }`}
-                                >
-                                  {formatTime(f.start_time)}
-                                  {f.formats && f.formats.length > 0 && (
-                                    <span className="flex gap-1">
-                                      {f.formats.map((fmt) => (
-                                        <span
-                                          key={fmt.id}
-                                          className="text-[10px] px-1 py-0.5 rounded bg-gray-600/50 text-gray-300 border border-gray-500/30"
-                                        >
-                                          {fmt.name}
-                                        </span>
-                                      ))}
-                                    </span>
-                                  )}
-                                </button>
-                              ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+            ) : formatTabs.length > 0 ? (
+              <>
+                {formatTabs.length > 1 && (
+                  <div className="flex flex-wrap gap-2 mb-5">
+                    {formatTabs.map((tab, idx) => (
+                      <button
+                        key={tab.label}
+                        onClick={() => setActiveTab(idx)}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          idx === activeTab
+                            ? "bg-red-600 text-white"
+                            : "bg-gray-800 text-gray-400 hover:text-white border border-gray-700 hover:border-gray-500"
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
                   </div>
-                ))}
-              </div>
+                )}
+
+                <div className="space-y-6">
+                  {Array.from(groupedByDate.entries()).map(([dayKey, dayFunciones]) => (
+                    <div key={dayKey}>
+                      <p className="text-sm font-semibold text-gray-400 mb-3 uppercase tracking-wider">
+                        {formatDate(dayFunciones[0].start_time)}
+                      </p>
+                      <div className="space-y-3">
+                        {Array.from(
+                          (() => {
+                            const m = new Map<string, Funcion[]>();
+                            for (const ff of dayFunciones) {
+                              if (!m.has(ff.sala_name)) m.set(ff.sala_name, []);
+                              m.get(ff.sala_name)!.push(ff);
+                            }
+                            return m;
+                          })().entries(),
+                        ).map(([sala, salaFunciones]) => (
+                          <div
+                            key={sala}
+                            className="bg-gray-800 border border-gray-700/50 rounded-xl p-4"
+                          >
+                            <div className="flex items-center justify-between mb-3">
+                              <p className="text-white font-medium text-sm">{sala}</p>
+                              <span className="text-xs text-gray-500">
+                                {salaFunciones[0].available_seats} asientos
+                              </span>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {salaFunciones
+                                .sort(
+                                  (a, b) =>
+                                    new Date(a.start_time).getTime() -
+                                    new Date(b.start_time).getTime(),
+                                )
+                                .map((f) => (
+                                  <button
+                                    key={f.id}
+                                    onClick={() =>
+                                      navigate(`/movies/${id}/funcion/${f.id}/seats`)
+                                    }
+                                    disabled={f.available_seats === 0}
+                                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                                      f.available_seats === 0
+                                        ? "bg-gray-700/30 text-gray-600 cursor-not-allowed"
+                                        : "bg-gray-700/50 text-gray-200 hover:bg-red-600 hover:text-white border border-gray-600/30 hover:border-red-600"
+                                    }`}
+                                  >
+                                    {formatTime(f.start_time)}
+                                  </button>
+                                ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
             ) : (
               <div className="text-center py-12 bg-gray-800/30 border border-gray-700/30 rounded-xl">
                 <Clock className="w-10 h-10 text-gray-600 mx-auto mb-3" />
