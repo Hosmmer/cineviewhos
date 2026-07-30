@@ -64,6 +64,29 @@ git -C <repo_path> remote get-url origin
 
 Parse the `owner/repo` from the URL.
 
+## Step 4 — Cleanup (after merge)
+
+After the PR is merged, ALWAYS clean up the feature branch:
+
+```bash
+# 1. Switch to main
+git -C <repo_path> checkout main && git -C <repo_path> pull origin main
+
+# 2. Delete the local feature branch
+git -C <repo_path> branch -d <feature-branch>
+
+# 3. Delete the remote feature branch
+git -C <repo_path> push origin --delete <feature-branch>
+
+# 4. Prune stale remote tracking refs
+git -C <repo_path> fetch --prune
+```
+
+**Safety checks:**
+- Confirm the PR is fully merged (not just closed) before deleting
+- If `git branch -d` fails (branch not fully merged), warn user and skip deletion
+- Never delete `main`, `master`, `staging`, or `develop` branches
+
 ## Output
 
 ```
