@@ -85,6 +85,8 @@ Project manifest — single source of truth for all skills and agents.
 - **Ticket creation**: description.md mandatory, no em dashes in titles, check next_id
 - **XE-12**: off-limits — never read/modify/comment
 - **Local dev config**: `settings.py`/`vite.config.ts`/`Makefile` in skip-worktree; never PR
+- **Skills sync MANDATORY**: every time a skill is created or modified (in `~/.config/opencode/skills/` or `.opencode/skills/`), the changes MUST also be committed and pushed to https://github.com/Hosmmer/skills-config-IA (`~/.config/opencode/skills/` is a clone of that repo)
+- **Branch cleanup MANDATORY after PR merge**: gpr skill automatically deletes local + remote feature branch after merge. Never leave stale branches behind.
 
 ## Skills
 
