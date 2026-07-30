@@ -135,7 +135,7 @@ function AdminMovieDisplayConfig() {
                     ["Actor", showActor, setShowActor],
                     ["Sinopsis", showDescription, setShowDescription],
                     ["Duracion", showDuration, setShowDuration],
-                    ["Ano del estreno", showReleaseYear, setShowReleaseYear],
+                    ["Año del estreno", showReleaseYear, setShowReleaseYear],
                     ["Precio", showPrice, setShowPrice],
                     ["Genero", showGenre, setShowGenre],
                   ].map(([label, value, setter]) => (
