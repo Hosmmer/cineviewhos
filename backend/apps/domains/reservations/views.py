@@ -5,15 +5,28 @@ from rest_framework.response import Response
 
 from apps.common.permissions import IsAdminUser
 
-from .models import Funcion, Reserva, Sala
+from .models import Format, Funcion, Reserva, Sala
 from .serializers import (
     AdminFuncionSerializer,
+    FormatSerializer,
     ReservaListSerializer,
     ReservaSerializer,
     SalaDetailSerializer,
     SalaSerializer,
 )
 from .services import FuncionService, ReservaService, SalaService
+
+
+class FormatAdminViewSet(viewsets.ModelViewSet):
+    queryset = Format.objects.all()
+    serializer_class = FormatSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def destroy(self, request, *args, **kwargs):
+        fmt = self.get_object()
+        fmt.is_active = False
+        fmt.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class SalaAdminViewSet(viewsets.ModelViewSet):
@@ -63,7 +76,7 @@ class FuncionAdminViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsAdminUser]
 
     def get_queryset(self):
-        return Funcion.objects.select_related("movie", "sala").all()
+        return Funcion.objects.select_related("movie", "sala").prefetch_related("formats").all()
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -78,6 +91,7 @@ class FuncionAdminViewSet(viewsets.ModelViewSet):
             movie=serializer.validated_data["movie"],
             sala=serializer.validated_data["sala"],
             start_time=serializer.validated_data["start_time"],
+            format_ids=serializer.validated_data.get("format_ids"),
         )
         if result.success:
             return Response(result.data, status=result.status_code)
@@ -93,6 +107,7 @@ class FuncionAdminViewSet(viewsets.ModelViewSet):
             movie=serializer.validated_data["movie"],
             sala=serializer.validated_data["sala"],
             start_time=serializer.validated_data["start_time"],
+            format_ids=serializer.validated_data.get("format_ids"),
         )
         if result.success:
             return Response(result.data)

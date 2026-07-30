@@ -18,6 +18,18 @@ export interface SalaFormData {
   cols: number;
 }
 
+export interface Format {
+  id: number;
+  name: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FormatFormData {
+  name: string;
+}
+
 export interface Funcion {
   id: number;
   movie: number;
@@ -27,6 +39,7 @@ export interface Funcion {
   start_time: string;
   available_seats: number;
   is_active: boolean;
+  formats: Format[];
   created_at: string;
   updated_at: string;
 }
@@ -41,6 +54,7 @@ export interface FuncionFormData {
   movie: number;
   sala: number;
   start_time: string;
+  format_ids?: number[];
 }
 
 export interface Seat {

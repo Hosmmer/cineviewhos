@@ -2,7 +2,23 @@ from rest_framework import serializers
 
 from apps.domains.movies.models import Movie
 
-from .models import Funcion, Reserva, ReservaSeat, Sala, Seat
+from .models import Format, Funcion, Reserva, ReservaSeat, Sala, Seat
+
+
+class FormatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Format
+        fields = ["id", "name", "is_active", "created_at", "updated_at"]
+        read_only_fields = ["id", "created_at", "updated_at"]
+
+    def validate_name(self, value):
+        if not value or not value.strip():
+            raise serializers.ValidationError("Format name cannot be empty.")
+        if len(value) > 100:
+            raise serializers.ValidationError(
+                "Format name must be 100 characters or fewer."
+            )
+        return value.strip()
 
 
 class SeatSerializer(serializers.ModelSerializer):
@@ -70,12 +86,14 @@ class FuncionSerializer(serializers.ModelSerializer):
     movie_title = serializers.CharField(source="movie.title", read_only=True)
     sala_name = serializers.CharField(source="sala.name", read_only=True)
     available_seats = serializers.SerializerMethodField()
+    formats = FormatSerializer(many=True, read_only=True)
 
     class Meta:
         model = Funcion
         fields = [
             "id", "movie", "movie_title", "sala", "sala_name",
             "start_time", "available_seats", "is_active",
+            "formats",
             "created_at", "updated_at",
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
@@ -101,6 +119,7 @@ class FuncionDetailSerializer(serializers.ModelSerializer):
     sala_rows = serializers.IntegerField(source="sala.rows", read_only=True)
     sala_cols = serializers.IntegerField(source="sala.cols", read_only=True)
     available_seats = serializers.SerializerMethodField()
+    formats = FormatSerializer(many=True, read_only=True)
 
     class Meta:
         model = Funcion
@@ -108,6 +127,7 @@ class FuncionDetailSerializer(serializers.ModelSerializer):
             "id", "movie", "movie_title", "movie_duration",
             "sala", "sala_name", "sala_rows", "sala_cols",
             "start_time", "available_seats", "is_active",
+            "formats",
             "created_at", "updated_at",
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
@@ -124,15 +144,24 @@ class FuncionDetailSerializer(serializers.ModelSerializer):
 class AdminFuncionSerializer(serializers.ModelSerializer):
     movie_title = serializers.CharField(source="movie.title", read_only=True)
     sala_name = serializers.CharField(source="sala.name", read_only=True)
+    format_ids = serializers.ListField(
+        child=serializers.IntegerField(), required=False, write_only=True
+    )
+    format_names = serializers.SerializerMethodField(read_only=True)
+    formats = FormatSerializer(many=True, read_only=True)
 
     class Meta:
         model = Funcion
         fields = [
             "id", "movie", "movie_title", "sala", "sala_name",
             "start_time", "is_active",
+            "format_ids", "format_names", "formats",
             "created_at", "updated_at",
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
+
+    def get_format_names(self, obj):
+        return list(obj.formats.values_list("name", flat=True))
 
 
 class ReservaSeatSerializer(serializers.ModelSerializer):

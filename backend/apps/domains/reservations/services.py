@@ -6,7 +6,7 @@ from django.utils import timezone
 from apps.core.data_classes import ServiceResult
 from apps.core.services.base import BaseService
 
-from .models import Funcion, Reserva, ReservaSeat, Sala, Seat
+from .models import Format, Funcion, Reserva, ReservaSeat, Sala, Seat
 
 
 class SalaService(BaseService):
@@ -72,7 +72,7 @@ class FuncionService(BaseService):
         return None
 
     def create_funcion(
-        self, movie, sala: Sala, start_time
+        self, movie, sala: Sala, start_time, format_ids=None
     ) -> ServiceResult:
         end_time = start_time + timedelta(minutes=movie.duration_minutes)
 
@@ -84,13 +84,25 @@ class FuncionService(BaseService):
         funcion = Funcion.objects.create(
             movie=movie, sala=sala, start_time=start_time
         )
+        if format_ids is not None:
+            valid_ids = set(
+                Format.objects.filter(id__in=format_ids).values_list("id", flat=True)
+            )
+            if len(valid_ids) != len(format_ids):
+                return self.error("One or more format IDs are invalid.", 400)
+            funcion.formats.set(format_ids)
+
         return self.success(
-            data={"id": funcion.id, "start_time": str(funcion.start_time)},
+            data={
+                "id": funcion.id,
+                "start_time": str(funcion.start_time),
+                "format_ids": list(funcion.formats.values_list("id", flat=True)),
+            },
             status_code=201,
         )
 
     def update_funcion(
-        self, funcion: Funcion, movie, sala: Sala, start_time
+        self, funcion: Funcion, movie, sala: Sala, start_time, format_ids=None
     ) -> ServiceResult:
         end_time = start_time + timedelta(minutes=movie.duration_minutes)
 
@@ -103,8 +115,20 @@ class FuncionService(BaseService):
         funcion.sala = sala
         funcion.start_time = start_time
         funcion.save()
+        if format_ids is not None:
+            valid_ids = set(
+                Format.objects.filter(id__in=format_ids).values_list("id", flat=True)
+            )
+            if len(valid_ids) != len(format_ids):
+                return self.error("One or more format IDs are invalid.", 400)
+            funcion.formats.set(format_ids)
+
         return self.success(
-            data={"id": funcion.id, "start_time": str(funcion.start_time)}
+            data={
+                "id": funcion.id,
+                "start_time": str(funcion.start_time),
+                "format_ids": list(funcion.formats.values_list("id", flat=True)),
+            }
         )
 
     def soft_delete(self, funcion: Funcion) -> ServiceResult:

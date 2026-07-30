@@ -1,15 +1,17 @@
 from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.common.permissions import IsAdminUser
 
-from .models import Actor, Author, Director, Genre, Movie
+from .models import Actor, Author, Director, Genre, Movie, MovieDisplayConfig
 from .serializers import (
     ActorSerializer,
     AuthorSerializer,
     DirectorSerializer,
     GenreSerializer,
+    MovieDisplayConfigSerializer,
     MovieListSerializer,
     MovieSerializer,
 )
@@ -38,7 +40,7 @@ class GenreAdminViewSet(viewsets.ModelViewSet):
 
 class MovieAdminViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.select_related(
-        "genre", "director_fk", "author_fk", "actor_fk"
+        "genre", "director_fk", "author_fk", "actor_fk", "display_config"
     ).all()
     permission_classes = [IsAuthenticated, IsAdminUser]
 
@@ -58,6 +60,23 @@ class MovieAdminViewSet(viewsets.ModelViewSet):
         if result.success:
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response({"detail": result.error}, status=result.status_code)
+
+    @action(detail=True, methods=["get", "patch"], url_path="display-config")
+    def display_config(self, request, *args, **kwargs):
+        movie = self.get_object()
+        try:
+            config = movie.display_config
+        except MovieDisplayConfig.DoesNotExist:
+            config = MovieDisplayConfig.objects.create(movie=movie)
+
+        if request.method == "GET":
+            serializer = MovieDisplayConfigSerializer(config)
+            return Response(serializer.data)
+
+        serializer = MovieDisplayConfigSerializer(config, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
 
 class DirectorAdminViewSet(viewsets.ModelViewSet):

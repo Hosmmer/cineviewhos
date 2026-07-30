@@ -16,7 +16,7 @@ from .serializers import (
 
 class MoviePublicViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Movie.objects.filter(is_active=True).select_related(
-        "genre", "director_fk", "author_fk", "actor_fk"
+        "genre", "director_fk", "author_fk", "actor_fk", "display_config"
     )
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]

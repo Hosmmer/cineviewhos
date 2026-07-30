@@ -3,9 +3,10 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Funcion, Reserva, Seat
+from .models import Format, Funcion, Reserva, Seat
 from .serializers import (
     CreateReservaSerializer,
+    FormatSerializer,
     FuncionDetailSerializer,
     FuncionSerializer,
     ReservaListSerializer,
@@ -15,13 +16,19 @@ from .serializers import (
 from .services import ReservaService
 
 
+class FormatPublicViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Format.objects.filter(is_active=True)
+    serializer_class = FormatSerializer
+    permission_classes = [IsAuthenticated]
+
+
 class FuncionPublicViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = Funcion.objects.filter(is_active=True).select_related(
             "movie", "sala"
-        )
+        ).prefetch_related("formats")
         movie_id = self.request.query_params.get("movie")
         if movie_id:
             queryset = queryset.filter(movie_id=movie_id)

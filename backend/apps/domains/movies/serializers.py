@@ -3,7 +3,7 @@ import os
 from django.utils import timezone
 from rest_framework import serializers
 
-from .models import Actor, Author, Director, Genre, Movie
+from .models import Actor, Author, Director, Genre, Movie, MovieDisplayConfig
 
 
 class RelativeImageField(serializers.ImageField):
@@ -114,6 +114,21 @@ class MovieListSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "created_at", "updated_at"]
 
 
+class MovieDisplayConfigSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MovieDisplayConfig
+        fields = [
+            "show_director",
+            "show_author",
+            "show_actor",
+            "show_description",
+            "show_duration",
+            "show_release_year",
+            "show_price",
+            "show_genre",
+        ]
+
+
 class MovieSerializer(serializers.ModelSerializer):
     genre_detail = GenreSerializer(source="genre", read_only=True)
     genre_name = serializers.CharField(source="genre.name", read_only=True)
@@ -124,6 +139,7 @@ class MovieSerializer(serializers.ModelSerializer):
     actor_detail = ActorSerializer(source="actor_fk", read_only=True)
     actor_name = serializers.CharField(source="actor_fk.name", read_only=True)
     poster = RelativeImageField()
+    display_config = MovieDisplayConfigSerializer(read_only=True)
 
     class Meta:
         model = Movie
@@ -148,6 +164,7 @@ class MovieSerializer(serializers.ModelSerializer):
             "actor_detail",
             "actor_name",
             "is_active",
+            "display_config",
             "created_at",
             "updated_at",
         ]
