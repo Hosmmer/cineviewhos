@@ -11,8 +11,6 @@ import {
   fetchAdminDirectors,
   fetchAdminAuthors,
   fetchAdminActors,
-  fetchMovieDisplayConfig,
-  updateMovieDisplayConfig,
 } from "@/services/movieService";
 import type { Director, Author, Actor } from "@/types/movies";
 
@@ -78,36 +76,6 @@ function AdminMovieForm() {
     queryFn: () => fetchAdminMovie(Number(id)),
     enabled: isEdit,
   });
-
-  const { data: displayConfig } = useQuery({
-    queryKey: ["admin-movie-display-config", id],
-    queryFn: () => fetchMovieDisplayConfig(Number(id)),
-    enabled: isEdit,
-  });
-
-  const [showDirector, setShowDirector] = useState(true);
-  const [showAuthor, setShowAuthor] = useState(true);
-  const [showActor, setShowActor] = useState(true);
-  const [showDescription, setShowDescription] = useState(true);
-  const [showDuration, setShowDuration] = useState(true);
-  const [showReleaseYear, setShowReleaseYear] = useState(true);
-  const [showPrice, setShowPrice] = useState(true);
-  const [showGenre, setShowGenre] = useState(true);
-  const [dcSaving, setDcSaving] = useState(false);
-  const [dcError, setDcError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (displayConfig) {
-      setShowDirector(displayConfig.show_director);
-      setShowAuthor(displayConfig.show_author);
-      setShowActor(displayConfig.show_actor);
-      setShowDescription(displayConfig.show_description);
-      setShowDuration(displayConfig.show_duration);
-      setShowReleaseYear(displayConfig.show_release_year);
-      setShowPrice(displayConfig.show_price);
-      setShowGenre(displayConfig.show_genre);
-    }
-  }, [displayConfig]);
 
   const createMutation = useMutation({
     mutationFn: createMovie,
@@ -194,32 +162,6 @@ function AdminMovieForm() {
       });
     }
   }, [serverError]);
-
-  const handleDcSave = async () => {
-    setDcSaving(true);
-    setDcError(null);
-    try {
-      await updateMovieDisplayConfig(Number(id), {
-        show_director: showDirector,
-        show_author: showAuthor,
-        show_actor: showActor,
-        show_description: showDescription,
-        show_duration: showDuration,
-        show_release_year: showReleaseYear,
-        show_price: showPrice,
-        show_genre: showGenre,
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["admin-movie-display-config", id],
-      });
-    } catch (err: any) {
-      setDcError(
-        err?.response?.data?.detail || "Failed to save display config.",
-      );
-    } finally {
-      setDcSaving(false);
-    }
-  };
 
   if (isEdit && movieLoading) {
     return (
@@ -544,57 +486,6 @@ function AdminMovieForm() {
           <p className="text-sm text-red-400 bg-red-900/20 border border-red-900/50 rounded-lg px-4 py-3">
             {serverError.response.data.detail}
           </p>
-        )}
-
-        {isEdit && (
-          <div className="border-t border-gray-800 pt-5">
-            <h2 className="text-lg font-semibold text-white mb-4">
-              Display Configuration
-            </h2>
-            <p className="text-xs text-gray-500 mb-4">
-              Toggle which fields are visible on the public movie detail page.
-            </p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {[
-                ["Director", showDirector, setShowDirector],
-                ["Author", showAuthor, setShowAuthor],
-                ["Actor", showActor, setShowActor],
-                ["Description", showDescription, setShowDescription],
-                ["Duration", showDuration, setShowDuration],
-                ["Release Year", showReleaseYear, setShowReleaseYear],
-                ["Price", showPrice, setShowPrice],
-                ["Genre", showGenre, setShowGenre],
-              ].map(([label, value, setter]) => (
-                <label
-                  key={label as string}
-                  className="flex items-center gap-2 cursor-pointer"
-                >
-                  <input
-                    type="checkbox"
-                    checked={value as boolean}
-                    onChange={(e) =>
-                      (setter as (v: boolean) => void)(e.target.checked)
-                    }
-                    className="w-4 h-4 rounded border-gray-600 bg-gray-800 text-red-600 focus:ring-red-500 focus:ring-offset-0"
-                  />
-                  <span className="text-sm text-gray-300">{label as string}</span>
-                </label>
-              ))}
-            </div>
-            <div className="mt-4 flex items-center gap-3">
-              <button
-                type="button"
-                onClick={handleDcSave}
-                disabled={dcSaving}
-                className="px-4 py-1.5 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
-              >
-                {dcSaving ? "Saving..." : "Save Display Config"}
-              </button>
-              {dcError && (
-                <p className="text-xs text-red-400">{dcError}</p>
-              )}
-            </div>
-          </div>
         )}
 
         <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">

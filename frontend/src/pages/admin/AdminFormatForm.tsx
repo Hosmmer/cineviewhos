@@ -31,6 +31,9 @@ function AdminFormatForm() {
     mutationFn: createFormat,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-formats"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-formats-dropdown"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-funciones"] });
+      queryClient.invalidateQueries({ queryKey: ["funciones"] });
       navigate("/reservations/formats");
     },
     onError: (err: { response?: { data?: Record<string, string[]> } }) => {
@@ -48,6 +51,9 @@ function AdminFormatForm() {
     mutationFn: (data: { name: string }) => updateFormat(Number(id), data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-formats"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-formats-dropdown"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-funciones"] });
+      queryClient.invalidateQueries({ queryKey: ["funciones"] });
       queryClient.invalidateQueries({ queryKey: ["admin-format", id] });
       navigate("/reservations/formats");
     },

@@ -58,19 +58,19 @@ function AdminModuleList() {
 
   const creationMutation = useMutation({
     mutationFn: (data: Record<string, unknown>) => createModule(data as Partial<Module>),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["admin-modules"] }); closeForm(); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["admin-modules"] }); queryClient.invalidateQueries({ queryKey: ["modules"] }); closeForm(); },
     onError: (e: { response?: { data?: Record<string, string[]> } }) => setFormError(Object.values(e.response?.data || {})[0]?.[0] || "Error"),
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, ...data }: Record<string, unknown>) => updateModule(id as number, data as Partial<Module>),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["admin-modules"] }); closeForm(); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["admin-modules"] }); queryClient.invalidateQueries({ queryKey: ["modules"] }); closeForm(); },
     onError: (e: { response?: { data?: Record<string, string[]> } }) => setFormError(Object.values(e.response?.data || {})[0]?.[0] || "Error"),
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteModule,
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["admin-modules"] }); setDeleteId(null); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["admin-modules"] }); queryClient.invalidateQueries({ queryKey: ["modules"] }); setDeleteId(null); },
   });
 
   const openCreate = () => { setEditingModule(null); setForm({ name: "", slug: "", icon: "Package", route: "", parent: "", order: "0", is_active: true }); setSelectedRoles([]); setFormError(""); setShowForm(true); };

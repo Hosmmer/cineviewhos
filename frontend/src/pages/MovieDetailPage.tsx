@@ -57,12 +57,14 @@ function MovieDetailPage() {
     queryKey: ["movie", id],
     queryFn: () => fetchMovie(Number(id)),
     enabled: !!id,
+    staleTime: 0,
   });
 
   const { data: funcionesData, isLoading: funcionesLoading } = useQuery({
     queryKey: ["funciones", id],
     queryFn: () => fetchFunciones(Number(id)),
     enabled: !!id,
+    staleTime: 0,
   });
 
   const funciones = funcionesData?.results ?? [];

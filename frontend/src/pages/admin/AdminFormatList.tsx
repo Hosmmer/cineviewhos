@@ -26,6 +26,9 @@ function AdminFormatList() {
     mutationFn: deleteFormat,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-formats"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-formats-dropdown"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-funciones"] });
+      queryClient.invalidateQueries({ queryKey: ["funciones"] });
       setDeleteId(null);
     },
   });

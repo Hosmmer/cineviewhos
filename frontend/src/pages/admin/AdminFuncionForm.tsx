@@ -78,6 +78,7 @@ function AdminFuncionForm() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-funciones"] });
       queryClient.invalidateQueries({ queryKey: ["admin-funcion", id] });
+      queryClient.invalidateQueries({ queryKey: ["funciones"] });
       navigate("/reservations/showtimes");
     },
     onError: (err: any) => {

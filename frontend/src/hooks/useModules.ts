@@ -6,7 +6,7 @@ export function useModules() {
   return useQuery<Module[]>({
     queryKey: ["modules"],
     queryFn: fetchModules,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
     refetchInterval: 60 * 1000,
     refetchOnWindowFocus: true,
   });

@@ -24,6 +24,9 @@ const AdminFormatForm = lazy(() => import("@/pages/admin/AdminFormatForm"));
 const AdminRoleList = lazy(() => import("@/pages/admin/AdminRoleList"));
 const AdminUserList = lazy(() => import("@/pages/admin/AdminUserList"));
 const AdminModuleList = lazy(() => import("@/pages/admin/AdminModuleList"));
+const AdminMovieDisplayConfig = lazy(
+  () => import("@/pages/admin/AdminMovieDisplayConfig"),
+);
 
 const adminChildren = (
   <>
@@ -43,6 +46,7 @@ const adminChildren = (
     <Route path="movies/actors" element={<AdminActorList />} />
     <Route path="movies/actors/create" element={<AdminActorForm />} />
     <Route path="movies/actors/:id/edit" element={<AdminActorForm />} />
+    <Route path="movies/display-config" element={<AdminMovieDisplayConfig />} />
     <Route path="genres" element={<AdminGenreList />} />
     <Route path="genres/create" element={<AdminGenreForm />} />
     <Route path="genres/:id/edit" element={<AdminGenreForm />} />
