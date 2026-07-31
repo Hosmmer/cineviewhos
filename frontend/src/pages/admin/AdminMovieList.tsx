@@ -30,6 +30,7 @@ function AdminMovieList() {
     mutationFn: deleteMovie,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-movies"] });
+      queryClient.invalidateQueries({ queryKey: ["public-movies"] });
       setDeleteId(null);
     },
   });

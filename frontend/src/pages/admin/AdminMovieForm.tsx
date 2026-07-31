@@ -81,6 +81,7 @@ function AdminMovieForm() {
     mutationFn: createMovie,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-movies"] });
+      queryClient.invalidateQueries({ queryKey: ["public-movies"] });
       navigate("/movies");
     },
   });
@@ -91,6 +92,7 @@ function AdminMovieForm() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-movies"] });
       queryClient.invalidateQueries({ queryKey: ["admin-movie", id] });
+      queryClient.invalidateQueries({ queryKey: ["public-movies"] });
       navigate("/movies");
     },
   });
