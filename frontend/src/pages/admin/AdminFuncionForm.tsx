@@ -125,7 +125,7 @@ function AdminFuncionForm() {
             <option value={0}>Seleccionar...</option>
             {salas.map((s: SalaDetail) => (
               <option key={s.id} value={s.id}>
-                {s.name} ({s.rows}&times;{s.cols})
+                {s.cine_name} - Sala {s.number} ({s.rows}&times;{s.cols})
               </option>
             ))}
           </select>

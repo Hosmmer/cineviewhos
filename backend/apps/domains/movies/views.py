@@ -41,7 +41,7 @@ class GenreAdminViewSet(viewsets.ModelViewSet):
 class MovieAdminViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.select_related(
         "genre", "director_fk", "author_fk", "actor_fk", "display_config"
-    ).all()
+    ).prefetch_related("franjas").all()
     permission_classes = [IsAuthenticated, IsAdminUser]
 
     def get_serializer_class(self):

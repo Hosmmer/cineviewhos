@@ -3,6 +3,8 @@ import os
 from django.utils import timezone
 from rest_framework import serializers
 
+from apps.domains.reservations.models import Franja
+
 from .models import Actor, Author, Director, Genre, Movie, MovieDisplayConfig
 
 
@@ -92,6 +94,7 @@ class MovieListSerializer(serializers.ModelSerializer):
     author_name = serializers.CharField(source="author_fk.name", read_only=True)
     actor_name = serializers.CharField(source="actor_fk.name", read_only=True)
     poster = RelativeImageField(read_only=True)
+    franjas = serializers.SerializerMethodField()
 
     class Meta:
         model = Movie
@@ -107,11 +110,15 @@ class MovieListSerializer(serializers.ModelSerializer):
             "price",
             "genre",
             "genre_name",
+            "franjas",
             "is_active",
             "created_at",
             "updated_at",
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
+
+    def get_franjas(self, obj):
+        return [{"id": f.id, "name": f.name} for f in obj.franjas.all()]
 
 
 class MovieDisplayConfigSerializer(serializers.ModelSerializer):
@@ -140,6 +147,10 @@ class MovieSerializer(serializers.ModelSerializer):
     actor_name = serializers.CharField(source="actor_fk.name", read_only=True)
     poster = RelativeImageField()
     display_config = MovieDisplayConfigSerializer(read_only=True)
+    franja_ids = serializers.ListField(
+        child=serializers.IntegerField(), required=False, write_only=True
+    )
+    franjas = serializers.SerializerMethodField()
 
     class Meta:
         model = Movie
@@ -163,12 +174,43 @@ class MovieSerializer(serializers.ModelSerializer):
             "actor_fk",
             "actor_detail",
             "actor_name",
+            "franja_ids",
+            "franjas",
             "is_active",
             "display_config",
             "created_at",
             "updated_at",
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
+
+    def get_franjas(self, obj):
+        return [{"id": f.id, "name": f.name} for f in obj.franjas.all()]
+
+    def validate_franja_ids(self, value):
+        if value:
+            valid = set(
+                Franja.objects.filter(id__in=value).values_list("id", flat=True)
+            )
+            invalid = [fid for fid in value if fid not in valid]
+            if invalid:
+                raise serializers.ValidationError(
+                    f"One or more franja IDs are invalid: {invalid}."
+                )
+        return value
+
+    def create(self, validated_data):
+        franja_ids = validated_data.pop("franja_ids", [])
+        movie = super().create(validated_data)
+        if franja_ids:
+            movie.franjas.set(franja_ids)
+        return movie
+
+    def update(self, instance, validated_data):
+        franja_ids = validated_data.pop("franja_ids", None)
+        movie = super().update(instance, validated_data)
+        if franja_ids is not None:
+            movie.franjas.set(franja_ids)
+        return movie
 
     def validate_title(self, value):
         if not value or not value.strip():

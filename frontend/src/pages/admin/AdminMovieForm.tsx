@@ -12,6 +12,7 @@ import {
   fetchAdminAuthors,
   fetchAdminActors,
 } from "@/services/movieService";
+import { fetchAdminFranjas } from "@/services/reservationService";
 import type { Director, Author, Actor } from "@/types/movies";
 
 const currentYear = new Date().getFullYear();
@@ -71,6 +72,13 @@ function AdminMovieForm() {
     queryFn: fetchAdminActors,
   });
 
+  const { data: franjasData } = useQuery({
+    queryKey: ["admin-franjas"],
+    queryFn: fetchAdminFranjas,
+  });
+
+  const franjas = franjasData?.results ?? [];
+
   const { data: movie, isLoading: movieLoading } = useQuery({
     queryKey: ["admin-movie", id],
     queryFn: () => fetchAdminMovie(Number(id)),
@@ -108,6 +116,7 @@ function AdminMovieForm() {
       director_fk: null as number | null,
       author_fk: null as number | null,
       actor_fk: null as number | null,
+      franja_ids: [] as number[],
       poster: null as File | null,
     },
     validationSchema,
@@ -134,6 +143,7 @@ function AdminMovieForm() {
         director_fk: movie.director_fk,
         author_fk: movie.author_fk,
         actor_fk: movie.actor_fk,
+        franja_ids: movie.franjas?.map((f) => f.id) ?? [],
         poster: null,
       });
       if (movie.poster) {
@@ -270,6 +280,36 @@ function AdminMovieForm() {
               {formik.errors.description}
             </p>
           )}
+        </div>
+
+        <div>
+          <span className="block text-sm font-medium text-gray-300 mb-1">
+            Franjas
+          </span>
+          <div className="flex flex-wrap gap-3">
+            {franjas.map((f) => {
+              const checked = formik.values.franja_ids.includes(f.id);
+              return (
+                <label
+                  key={f.id}
+                  className="flex items-center gap-2 text-sm text-gray-300"
+                >
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => {
+                      const next = checked
+                        ? formik.values.franja_ids.filter((id) => id !== f.id)
+                        : [...formik.values.franja_ids, f.id];
+                      formik.setFieldValue("franja_ids", next);
+                    }}
+                    className="accent-red-600"
+                  />
+                  {f.name}
+                </label>
+              );
+            })}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

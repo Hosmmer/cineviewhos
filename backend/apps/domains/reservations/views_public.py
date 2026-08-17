@@ -99,7 +99,7 @@ class ReservaPublicViewSet(viewsets.ModelViewSet):
         result = service.create_reserva(
             user=request.user,
             funcion=funcion,
-            seat_ids=serializer.validated_data["seat_ids"],
+            seats=serializer.validated_data["seats"],
         )
         if result.success:
             return Response(result.data, status=result.status_code)

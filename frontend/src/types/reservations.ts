@@ -1,6 +1,42 @@
-export interface Sala {
+export interface Cine {
   id: number;
   name: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CineFormData {
+  name: string;
+}
+
+export interface CineScheduleFuncion {
+  id: number;
+  movie_id: number;
+  movie_title: string;
+  start_time: string;
+  is_active: boolean;
+}
+
+export interface CineScheduleSala {
+  id: number;
+  number: number;
+  rows: number;
+  cols: number;
+  funciones: CineScheduleFuncion[];
+}
+
+export interface CineSchedule {
+  id: number;
+  name: string;
+  salas: CineScheduleSala[];
+}
+
+export interface Sala {
+  id: number;
+  cine: number;
+  cine_name?: string;
+  number: number;
   rows: number;
   cols: number;
   created_at: string;
@@ -13,7 +49,8 @@ export interface SalaDetail extends Sala {
 }
 
 export interface SalaFormData {
-  name: string;
+  cine: number;
+  number: number;
   rows: number;
   cols: number;
 }
@@ -30,16 +67,35 @@ export interface FormatFormData {
   name: string;
 }
 
+export interface Franja {
+  id: number;
+  name: string;
+  start_time: string;
+  end_time: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FranjaFormData {
+  name: string;
+  start_time: string;
+  end_time: string;
+}
+
 export interface Funcion {
   id: number;
   movie: number;
   movie_title: string;
   sala: number;
   sala_name: string;
+  cine_name?: string;
+  sala_number?: number;
   start_time: string;
   available_seats: number;
   is_active: boolean;
   formats: Format[];
+  franja?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -92,6 +148,7 @@ export interface ReservaList {
   status: "confirmed" | "anulada";
   confirmed_at: string;
   seat_count: number;
+  seats?: ReservaSeat[];
   created_at: string;
   updated_at: string;
 }
@@ -101,9 +158,10 @@ export interface ReservaSeat {
   seat_id: number;
   row: number;
   col: number;
+  person_name?: string;
 }
 
 export interface CreateReservaData {
   funcion_id: number;
-  seat_ids: number[];
+  seats: { seat_id: number; person_name: string }[];
 }

@@ -30,7 +30,7 @@ function AdminSalaList() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-white">Salas</h1>
         <button
-          onClick={() => navigate("/reservations/salas/create")}
+          onClick={() => navigate("/reservations/rooms/create")}
           className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
         >
           Nueva Sala
@@ -52,7 +52,8 @@ function AdminSalaList() {
           <table className="w-full text-sm text-left">
             <thead className="bg-gray-750 border-b border-gray-700">
               <tr>
-                <th className="px-4 py-3 text-gray-400 font-medium">Nombre</th>
+                <th className="px-4 py-3 text-gray-400 font-medium">Cine</th>
+                <th className="px-4 py-3 text-gray-400 font-medium">Sala</th>
                 <th className="px-4 py-3 text-gray-400 font-medium">Filas</th>
                 <th className="px-4 py-3 text-gray-400 font-medium">Columnas</th>
                 <th className="px-4 py-3 text-gray-400 font-medium">Asientos</th>
@@ -63,14 +64,15 @@ function AdminSalaList() {
             <tbody className="divide-y divide-gray-700/50">
               {salas.map((s: SalaDetail) => (
                 <tr key={s.id} className="hover:bg-gray-700/30">
-                  <td className="px-4 py-3 text-white">{s.name}</td>
+                  <td className="px-4 py-3 text-white">{s.cine_name}</td>
+                  <td className="px-4 py-3 text-white">{s.number}</td>
                   <td className="px-4 py-3 text-gray-300">{s.rows}</td>
                   <td className="px-4 py-3 text-gray-300">{s.cols}</td>
                   <td className="px-4 py-3 text-gray-300">{s.seat_count}</td>
                   <td className="px-4 py-3 text-gray-300">{s.active_funcion_count}</td>
                   <td className="px-4 py-3 text-right">
                     <button
-                      onClick={() => navigate(`/reservations/salas/${s.id}/edit`)}
+                      onClick={() => navigate(`/reservations/rooms/${s.id}/edit`)}
                       className="px-3 py-1 text-xs text-blue-400 hover:text-blue-300 mr-2"
                     >
                       Editar

@@ -1,9 +1,14 @@
 import djangoApi from "@/api/django";
 import type { PaginatedResponse } from "@/types/movies";
 import type {
+  Cine,
+  CineFormData,
+  CineSchedule,
   CreateReservaData,
   Format,
   FormatFormData,
+  Franja,
+  FranjaFormData,
   Funcion,
   FuncionDetail,
   FuncionFormData,
@@ -68,13 +73,45 @@ export async function createSala(data: SalaFormData): Promise<Sala> {
   return res.data;
 }
 
-export async function updateSala(id: number, data: { name: string }): Promise<Sala> {
+export async function updateSala(
+  id: number,
+  data: { cine: number; number: number },
+): Promise<Sala> {
   const res = await djangoApi.patch<Sala>(`/admin/salas/${id}/`, data);
   return res.data;
 }
 
 export async function deleteSala(id: number): Promise<void> {
   await djangoApi.delete(`/admin/salas/${id}/`);
+}
+
+export async function fetchAdminCines(): Promise<PaginatedResponse<Cine>> {
+  const res = await djangoApi.get<PaginatedResponse<Cine>>("/admin/cines/");
+  return res.data;
+}
+
+export async function fetchAdminCine(id: number): Promise<Cine> {
+  const res = await djangoApi.get<Cine>(`/admin/cines/${id}/`);
+  return res.data;
+}
+
+export async function fetchAdminCineSchedule(id: number): Promise<CineSchedule> {
+  const res = await djangoApi.get<CineSchedule>(`/admin/cines/${id}/schedule/`);
+  return res.data;
+}
+
+export async function createCine(data: CineFormData): Promise<Cine> {
+  const res = await djangoApi.post<Cine>("/admin/cines/", data);
+  return res.data;
+}
+
+export async function updateCine(id: number, data: CineFormData): Promise<Cine> {
+  const res = await djangoApi.patch<Cine>(`/admin/cines/${id}/`, data);
+  return res.data;
+}
+
+export async function deleteCine(id: number): Promise<void> {
+  await djangoApi.delete(`/admin/cines/${id}/`);
 }
 
 export async function fetchAdminFunciones(): Promise<PaginatedResponse<Funcion>> {
@@ -141,4 +178,36 @@ export async function deleteFormat(id: number): Promise<void> {
 export async function fetchFormats(): Promise<Format[]> {
   const res = await djangoApi.get<PaginatedResponse<Format>>("/formats/");
   return res.data.results;
+}
+
+export async function fetchAdminFranjas(): Promise<PaginatedResponse<Franja>> {
+  const res = await djangoApi.get<PaginatedResponse<Franja>>("/admin/franjas/");
+  return res.data;
+}
+
+export async function fetchAdminFranja(id: number): Promise<Franja> {
+  const res = await djangoApi.get<Franja>(`/admin/franjas/${id}/`);
+  return res.data;
+}
+
+export async function createFranja(data: FranjaFormData): Promise<Franja> {
+  const res = await djangoApi.post<Franja>("/admin/franjas/", data);
+  return res.data;
+}
+
+export async function updateFranja(
+  id: number,
+  data: FranjaFormData,
+): Promise<Franja> {
+  const res = await djangoApi.patch<Franja>(`/admin/franjas/${id}/`, data);
+  return res.data;
+}
+
+export async function deleteFranja(id: number): Promise<void> {
+  await djangoApi.delete(`/admin/franjas/${id}/`);
+}
+
+export async function createAdminReserva(data: CreateReservaData): Promise<Reserva> {
+  const res = await djangoApi.post<Reserva>("/admin/reservas/", data);
+  return res.data;
 }

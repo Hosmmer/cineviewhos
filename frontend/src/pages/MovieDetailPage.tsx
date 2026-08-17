@@ -5,7 +5,7 @@ import { fetchMovie } from "@/services/movieService";
 import { fetchFunciones } from "@/services/reservationService";
 import type { Movie } from "@/types/movies";
 import type { Funcion } from "@/types/reservations";
-import { Clock } from "lucide-react";
+import { Clock, MapPin } from "lucide-react";
 
 function formatPrice(price: string): string {
   return new Intl.NumberFormat("es-CO", {
@@ -49,6 +49,75 @@ function groupByDate(funciones: Funcion[]): Map<string, Funcion[]> {
   return groups;
 }
 
+function groupByCine(funciones: Funcion[]): Map<string, Funcion[]> {
+  const groups = new Map<string, Funcion[]>();
+  for (const f of funciones) {
+    const cine = f.cine_name || "Sin lugar";
+    if (!groups.has(cine)) groups.set(cine, []);
+    groups.get(cine)!.push(f);
+  }
+  return groups;
+}
+
+function groupBySalaNumber(funciones: Funcion[]): Map<number, Funcion[]> {
+  const groups = new Map<number, Funcion[]>();
+  for (const f of funciones) {
+    const n = f.sala_number ?? 0;
+    if (!groups.has(n)) groups.set(n, []);
+    groups.get(n)!.push(f);
+  }
+  return groups;
+}
+
+function buildFormatTabs(funciones: Funcion[]): { label: string; funciones: Funcion[] }[] {
+  const groups = new Map<string, Funcion[]>();
+  const sinFormato: Funcion[] = [];
+  for (const f of funciones) {
+    if (f.formats && f.formats.length > 0) {
+      for (const fmt of f.formats) {
+        if (!groups.has(fmt.name)) groups.set(fmt.name, []);
+        groups.get(fmt.name)!.push(f);
+      }
+    } else {
+      sinFormato.push(f);
+    }
+  }
+  const tabs = Array.from(groups.entries()).map(([label, fs]) => ({
+    label,
+    funciones: fs,
+  }));
+  tabs.sort((a, b) => a.label.localeCompare(b.label));
+  if (sinFormato.length > 0) {
+    tabs.push({ label: "Sin formato", funciones: sinFormato });
+  }
+  return tabs;
+}
+
+function buildFranjaTabs(funciones: Funcion[]): { label: string; funciones: Funcion[] }[] {
+  const groups = new Map<string, Funcion[]>();
+  for (const f of funciones) {
+    const franja = f.franja || "Sin franja";
+    if (!groups.has(franja)) groups.set(franja, []);
+    groups.get(franja)!.push(f);
+  }
+  const tabs = Array.from(groups.entries()).map(([label, fs]) => ({
+    label,
+    funciones: fs,
+  }));
+  tabs.sort((a, b) => {
+    if (a.label === "Sin franja") return 1;
+    if (b.label === "Sin franja") return -1;
+    const aMin = Math.min(
+      ...a.funciones.map((f) => new Date(f.start_time).getTime()),
+    );
+    const bMin = Math.min(
+      ...b.funciones.map((f) => new Date(f.start_time).getTime()),
+    );
+    return aMin - bMin;
+  });
+  return tabs;
+}
+
 function MovieDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -69,42 +138,23 @@ function MovieDetailPage() {
 
   const funciones = funcionesData?.results ?? [];
 
-  const formatTabs = useMemo(() => {
-    const tabs: { label: string; funciones: Funcion[] }[] = [];
-    const seen = new Set<string>();
-    const sinFormato: Funcion[] = [];
+  const franjaTabs = useMemo(() => buildFranjaTabs(funciones), [funciones]);
 
-    for (const f of funciones) {
-      if (f.formats && f.formats.length > 0) {
-        for (const fmt of f.formats) {
-          if (!seen.has(fmt.name)) {
-            seen.add(fmt.name);
-            tabs.push({ label: fmt.name, funciones: [f] });
-          } else {
-            const tab = tabs.find((t) => t.label === fmt.name);
-            if (tab) tab.funciones.push(f);
-          }
-        }
-      } else {
-        sinFormato.push(f);
-      }
-    }
+  const [activeFranja, setActiveFranja] = useState(0);
+  const [activeFormat, setActiveFormat] = useState(0);
 
-    // Sort by format name
-    tabs.sort((a, b) => a.label.localeCompare(b.label));
+  const franjaFunciones = franjaTabs[activeFranja]?.funciones ?? [];
 
-    if (sinFormato.length > 0) {
-      tabs.unshift({ label: "Sin formato", funciones: sinFormato });
-    }
+  const formatTabs = useMemo(
+    () => buildFormatTabs(franjaFunciones),
+    [franjaFunciones],
+  );
 
-    return tabs;
-  }, [funciones]);
+  const formatFunciones = formatTabs[activeFormat]?.funciones ?? [];
 
-  const [activeTab, setActiveTab] = useState(0);
-
-  const groupedByDate = useMemo(
-    () => groupByDate(formatTabs[activeTab]?.funciones ?? []),
-    [formatTabs, activeTab],
+  const groupedByCine = useMemo(
+    () => groupByCine(formatFunciones),
+    [formatFunciones],
   );
 
   if (movieLoading) {
@@ -225,16 +275,19 @@ function MovieDetailPage() {
                   </div>
                 ))}
               </div>
-            ) : formatTabs.length > 0 ? (
+            ) : franjaTabs.length > 0 ? (
               <>
-                {formatTabs.length > 1 && (
-                  <div className="flex flex-wrap gap-2 mb-5">
-                    {formatTabs.map((tab, idx) => (
+                {franjaTabs.length > 1 && (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {franjaTabs.map((tab, idx) => (
                       <button
                         key={tab.label}
-                        onClick={() => setActiveTab(idx)}
+                        onClick={() => {
+                          setActiveFranja(idx);
+                          setActiveFormat(0);
+                        }}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                          idx === activeTab
+                          idx === activeFranja
                             ? "bg-red-600 text-white"
                             : "bg-gray-800 text-gray-400 hover:text-white border border-gray-700 hover:border-gray-500"
                         }`}
@@ -245,62 +298,101 @@ function MovieDetailPage() {
                   </div>
                 )}
 
-                <div className="space-y-6">
-                  {Array.from(groupedByDate.entries()).map(([dayKey, dayFunciones]) => (
-                    <div key={dayKey}>
-                      <p className="text-sm font-semibold text-gray-400 mb-3 uppercase tracking-wider">
-                        {formatDate(dayFunciones[0].start_time)}
-                      </p>
-                      <div className="space-y-3">
-                        {Array.from(
-                          (() => {
-                            const m = new Map<string, Funcion[]>();
-                            for (const ff of dayFunciones) {
-                              if (!m.has(ff.sala_name)) m.set(ff.sala_name, []);
-                              m.get(ff.sala_name)!.push(ff);
-                            }
-                            return m;
-                          })().entries(),
-                        ).map(([sala, salaFunciones]) => (
-                          <div
-                            key={sala}
-                            className="bg-gray-800 border border-gray-700/50 rounded-xl p-4"
-                          >
-                            <div className="flex items-center justify-between mb-3">
-                              <p className="text-white font-medium text-sm">{sala}</p>
-                              <span className="text-xs text-gray-500">
-                                {salaFunciones[0].available_seats} asientos
-                              </span>
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                              {salaFunciones
-                                .sort(
-                                  (a, b) =>
-                                    new Date(a.start_time).getTime() -
-                                    new Date(b.start_time).getTime(),
-                                )
-                                .map((f) => (
-                                  <button
-                                    key={f.id}
-                                    onClick={() =>
-                                      navigate(`/movies/${id}/funcion/${f.id}/seats`)
-                                    }
-                                    disabled={f.available_seats === 0}
-                                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                                      f.available_seats === 0
-                                        ? "bg-gray-700/30 text-gray-600 cursor-not-allowed"
-                                        : "bg-gray-700/50 text-gray-200 hover:bg-red-600 hover:text-white border border-gray-600/30 hover:border-red-600"
-                                    }`}
-                                  >
-                                    {formatTime(f.start_time)}
-                                  </button>
-                                ))}
-                            </div>
-                          </div>
-                        ))}
+                {formatTabs.length > 1 && (
+                  <div className="flex flex-wrap gap-2 mb-5">
+                    {formatTabs.map((tab, idx) => (
+                      <button
+                        key={tab.label}
+                        onClick={() => setActiveFormat(idx)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                          idx === activeFormat
+                            ? "bg-red-600 text-white"
+                            : "bg-gray-800 text-gray-400 hover:text-white border border-gray-700 hover:border-gray-500"
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <div className="flex flex-wrap gap-4">
+                  {Array.from(groupedByCine.entries()).map(
+                    ([cine, cineFunciones]) => (
+                      <div
+                        key={cine}
+                        className="bg-gray-800 border border-gray-700/50 rounded-xl p-5 flex-1 min-w-[280px]"
+                      >
+                        <div className="flex items-center gap-2 mb-4">
+                          <MapPin className="w-4 h-4 text-red-400 shrink-0" />
+                          <h3 className="text-white font-semibold text-sm">
+                            {cine}
+                          </h3>
+                        </div>
+                        <div className="space-y-4">
+                          {Array.from(
+                            groupBySalaNumber(cineFunciones).entries(),
+                          )
+                            .sort(([a], [b]) => a - b)
+                            .map(([salaNumber, salaFunciones]) => (
+                              <div key={salaNumber}>
+                                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                                  Sala {salaNumber}
+                                </p>
+                                <div className="space-y-3">
+                                  {Array.from(
+                                    groupByDate(salaFunciones).entries(),
+                                  ).map(([dayKey, dayFunciones]) => (
+                                    <div key={dayKey}>
+                                      <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">
+                                        {formatDate(dayFunciones[0].start_time)}
+                                      </p>
+                                      <div className="flex flex-wrap gap-2">
+                                        {dayFunciones
+                                          .sort(
+                                            (a, b) =>
+                                              new Date(a.start_time).getTime() -
+                                              new Date(b.start_time).getTime(),
+                                          )
+                                          .map((f) => (
+                                            <button
+                                              key={f.id}
+                                              onClick={() =>
+                                                navigate(
+                                                  `/movies/${id}/funcion/${f.id}/seats`,
+                                                )
+                                              }
+                                              disabled={f.available_seats === 0}
+                                              className={`px-4 py-2 rounded-lg text-sm transition-all border ${
+                                                f.available_seats === 0
+                                                  ? "bg-gray-700/30 text-gray-600 cursor-not-allowed border-transparent"
+                                                  : "bg-gray-700/50 text-gray-200 hover:bg-red-600 hover:text-white border-gray-600/30 hover:border-red-600"
+                                              }`}
+                                            >
+                                              <span className="block font-medium">
+                                                {formatTime(f.start_time)}
+                                              </span>
+                                              <span
+                                                className={`block text-xs ${
+                                                  f.available_seats === 0
+                                                    ? "text-gray-600"
+                                                    : "text-gray-400"
+                                                }`}
+                                              >
+                                                {f.available_seats} asientos
+                                              </span>
+                                            </button>
+                                          ))}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ),
+                  )}
                 </div>
               </>
             ) : (

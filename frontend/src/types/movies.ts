@@ -55,6 +55,7 @@ export interface Movie {
   actor_fk: number | null;
   actor_detail?: Actor;
   actor_name?: string;
+  franjas?: { id: number; name: string }[];
   is_active: boolean;
   display_config?: MovieDisplayConfig;
   created_at: string;
@@ -73,6 +74,7 @@ export interface MovieList {
   price: string;
   genre: number;
   genre_name: string;
+  franjas?: { id: number; name: string }[];
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -89,6 +91,7 @@ export interface MovieFormData {
   director_fk: number | null;
   author_fk: number | null;
   actor_fk: number | null;
+  franja_ids?: number[];
 }
 
 export interface GenreFormData {

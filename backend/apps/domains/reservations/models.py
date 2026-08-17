@@ -17,16 +17,46 @@ class Format(TimeStampedMixin):
         return self.name
 
 
-class Sala(TimeStampedMixin):
+class Franja(TimeStampedMixin):
     name = models.CharField(max_length=100, unique=True)
-    rows = models.PositiveIntegerField()
-    cols = models.PositiveIntegerField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["start_time"]
+
+    def __str__(self):
+        return self.name
+
+
+class Cine(TimeStampedMixin):
+    name = models.CharField(max_length=100, unique=True)
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         ordering = ["name"]
 
     def __str__(self):
         return self.name
+
+
+class Sala(TimeStampedMixin):
+    cine = models.ForeignKey(Cine, on_delete=models.PROTECT, related_name="salas")
+    number = models.PositiveIntegerField()
+    rows = models.PositiveIntegerField()
+    cols = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ["cine", "number"]
+        unique_together = ["cine", "number"]
+
+    def __str__(self):
+        return self.display_name
+
+    @property
+    def display_name(self):
+        return f"{self.cine.name} - Sala {self.number}"
 
 
 @receiver(post_save, sender=Sala)
@@ -55,7 +85,7 @@ class Funcion(TimeStampedMixin):
         ordering = ["start_time"]
 
     def __str__(self):
-        return f"{self.movie.title} - {self.sala.name} - {self.start_time}"
+        return f"{self.movie.title} - {self.sala.display_name} - {self.start_time}"
 
 
 class Seat(TimeStampedMixin):
@@ -68,7 +98,7 @@ class Seat(TimeStampedMixin):
         unique_together = ["sala", "row", "col"]
 
     def __str__(self):
-        return f"{self.sala.name} - F{self.row}C{self.col}"
+        return f"{self.sala.display_name} - F{self.row}C{self.col}"
 
 
 class Reserva(TimeStampedMixin):
@@ -101,6 +131,7 @@ class ReservaSeat(TimeStampedMixin):
         Reserva, on_delete=models.CASCADE, related_name="reserva_seats"
     )
     seat = models.ForeignKey(Seat, on_delete=models.PROTECT, related_name="reserva_seats")
+    person_name = models.CharField(max_length=150, blank=False, default="")
 
     class Meta:
         unique_together = ["reserva", "seat"]
