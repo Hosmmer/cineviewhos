@@ -1,9 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchAdminReservas, adminAnularReserva } from "@/services/reservationService";
 import type { PaginatedResponse } from "@/types/movies";
 import type { ReservaList } from "@/types/reservations";
 
 function AdminReservationList() {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useQuery<PaginatedResponse<ReservaList>>({
@@ -29,7 +31,15 @@ function AdminReservationList() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-white mb-6">Reservas</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-white">Reservas</h1>
+        <button
+          onClick={() => navigate("/reservations/bookings/create")}
+          className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm font-medium"
+        >
+          + Nueva reserva
+        </button>
+      </div>
 
       {isLoading ? (
         <div className="space-y-3">{[1, 2, 3].map((i) => <div key={i} className="h-16 bg-gray-800 rounded animate-pulse" />)}</div>
@@ -58,7 +68,16 @@ function AdminReservationList() {
                   <td className="px-4 py-3 text-gray-300">
                     {new Date(r.start_time).toLocaleString("es-CO", { dateStyle: "long", timeStyle: "short" })}
                   </td>
-                  <td className="px-4 py-3 text-gray-300">{r.seat_count}</td>
+                  <td className="px-4 py-3 text-gray-300">
+                    {(r.seats ?? []).length > 0
+                      ? (r.seats ?? [])
+                          .map(
+                            (s) =>
+                              `F${s.row}C${s.col}${s.person_name ? ` (${s.person_name})` : ""}`,
+                          )
+                          .join(", ")
+                      : r.seat_count}
+                  </td>
                   <td className="px-4 py-3">{statusBadge(r.status)}</td>
                   <td className="px-4 py-3 text-right">
                     {r.status === "confirmed" && (

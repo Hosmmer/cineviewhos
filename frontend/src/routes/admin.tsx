@@ -14,6 +14,9 @@ const AdminActorList = lazy(() => import("@/pages/admin/AdminActorList"));
 const AdminActorForm = lazy(() => import("@/pages/admin/AdminActorForm"));
 const AdminSalaList = lazy(() => import("@/pages/admin/AdminSalaList"));
 const AdminSalaForm = lazy(() => import("@/pages/admin/AdminSalaForm"));
+const AdminCineList = lazy(() => import("@/pages/admin/AdminCineList"));
+const AdminCineForm = lazy(() => import("@/pages/admin/AdminCineForm"));
+const AdminCineDetail = lazy(() => import("@/pages/admin/AdminCineDetail"));
 const AdminFuncionList = lazy(() => import("@/pages/admin/AdminFuncionList"));
 const AdminFuncionForm = lazy(() => import("@/pages/admin/AdminFuncionForm"));
 const AdminReservationList = lazy(
@@ -21,6 +24,9 @@ const AdminReservationList = lazy(
 );
 const AdminFormatList = lazy(() => import("@/pages/admin/AdminFormatList"));
 const AdminFormatForm = lazy(() => import("@/pages/admin/AdminFormatForm"));
+const AdminFranjaList = lazy(() => import("@/pages/admin/AdminFranjaList"));
+const AdminFranjaForm = lazy(() => import("@/pages/admin/AdminFranjaForm"));
+const AdminCashierPage = lazy(() => import("@/pages/admin/AdminCashierPage"));
 const AdminRoleList = lazy(() => import("@/pages/admin/AdminRoleList"));
 const AdminUserList = lazy(() => import("@/pages/admin/AdminUserList"));
 const AdminModuleList = lazy(() => import("@/pages/admin/AdminModuleList"));
@@ -53,13 +59,21 @@ const adminChildren = (
     <Route path="reservations/rooms" element={<AdminSalaList />} />
     <Route path="reservations/rooms/create" element={<AdminSalaForm />} />
     <Route path="reservations/rooms/:id/edit" element={<AdminSalaForm />} />
+    <Route path="reservations/cines" element={<AdminCineList />} />
+    <Route path="reservations/cines/create" element={<AdminCineForm />} />
+    <Route path="reservations/cines/:id/edit" element={<AdminCineForm />} />
+    <Route path="reservations/cines/:id" element={<AdminCineDetail />} />
     <Route path="reservations/showtimes" element={<AdminFuncionList />} />
     <Route path="reservations/showtimes/create" element={<AdminFuncionForm />} />
     <Route path="reservations/showtimes/:id/edit" element={<AdminFuncionForm />} />
     <Route path="reservations/bookings" element={<AdminReservationList />} />
+    <Route path="reservations/bookings/create" element={<AdminCashierPage />} />
     <Route path="reservations/formats" element={<AdminFormatList />} />
     <Route path="reservations/formats/create" element={<AdminFormatForm />} />
     <Route path="reservations/formats/:id/edit" element={<AdminFormatForm />} />
+    <Route path="reservations/franjas" element={<AdminFranjaList />} />
+    <Route path="reservations/franjas/create" element={<AdminFranjaForm />} />
+    <Route path="reservations/franjas/:id/edit" element={<AdminFranjaForm />} />
   </>
 );
 

@@ -32,6 +32,9 @@ function toFormData(data: MovieFormData): FormData {
   if (data.actor_fk != null) {
     formData.append("actor_fk", String(data.actor_fk));
   }
+  if (data.franja_ids) {
+    data.franja_ids.forEach((id) => formData.append("franja_ids", String(id)));
+  }
   if (data.poster instanceof File) {
     formData.append("poster", data.poster);
   }

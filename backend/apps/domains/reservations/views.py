@@ -5,16 +5,103 @@ from rest_framework.response import Response
 
 from apps.common.permissions import IsAdminUser
 
-from .models import Format, Funcion, Reserva, Sala
+from .models import Cine, Format, Franja, Funcion, Reserva, Sala
 from .serializers import (
     AdminFuncionSerializer,
+    AdminReservaListSerializer,
+    AdminReservaSerializer,
+    CineScheduleSerializer,
+    CineSerializer,
+    CreateReservaSerializer,
     FormatSerializer,
-    ReservaListSerializer,
-    ReservaSerializer,
+    FranjaSerializer,
     SalaDetailSerializer,
     SalaSerializer,
 )
-from .services import FuncionService, ReservaService, SalaService
+from .services import CineService, FranjaService, FuncionService, ReservaService, SalaService
+
+
+class CineAdminViewSet(viewsets.ModelViewSet):
+    queryset = Cine.objects.all()
+    serializer_class = CineSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def create(self, request, *args, **kwargs):
+        serializer = CineSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        service = CineService()
+        result = service.create_cine(name=serializer.validated_data["name"])
+        if result.success:
+            return Response(result.data, status=result.status_code)
+        return Response({"detail": result.error}, status=result.status_code)
+
+    def update(self, request, *args, **kwargs):
+        cine = self.get_object()
+        serializer = CineSerializer(cine, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        service = CineService()
+        result = service.update_cine(
+            cine, name=serializer.validated_data.get("name", cine.name)
+        )
+        if result.success:
+            return Response(result.data)
+        return Response({"detail": result.error}, status=result.status_code)
+
+    def destroy(self, request, *args, **kwargs):
+        cine = self.get_object()
+        service = CineService()
+        result = service.soft_delete(cine)
+        if result.success:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"detail": result.error}, status=result.status_code)
+
+    @action(detail=True, methods=["get"], url_path="schedule")
+    def schedule(self, request, pk=None):
+        cine = self.get_object()
+        serializer = CineScheduleSerializer(cine)
+        return Response(serializer.data)
+
+
+class FranjaAdminViewSet(viewsets.ModelViewSet):
+    queryset = Franja.objects.all()
+    serializer_class = FranjaSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def create(self, request, *args, **kwargs):
+        serializer = FranjaSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        service = FranjaService()
+        result = service.create_franja(
+            name=serializer.validated_data["name"],
+            start_time=serializer.validated_data["start_time"],
+            end_time=serializer.validated_data["end_time"],
+        )
+        if result.success:
+            return Response(result.data, status=result.status_code)
+        return Response({"detail": result.error}, status=result.status_code)
+
+    def update(self, request, *args, **kwargs):
+        franja = self.get_object()
+        serializer = FranjaSerializer(franja, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        service = FranjaService()
+        result = service.update_franja(
+            franja,
+            name=serializer.validated_data.get("name", franja.name),
+            start_time=serializer.validated_data.get("start_time", franja.start_time),
+            end_time=serializer.validated_data.get("end_time", franja.end_time),
+        )
+        if result.success:
+            return Response(result.data)
+        return Response({"detail": result.error}, status=result.status_code)
+
+    def destroy(self, request, *args, **kwargs):
+        franja = self.get_object()
+        service = FranjaService()
+        result = service.soft_delete(franja)
+        if result.success:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"detail": result.error}, status=result.status_code)
 
 
 class FormatAdminViewSet(viewsets.ModelViewSet):
@@ -45,7 +132,8 @@ class SalaAdminViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         service = SalaService()
         result = service.create_sala(
-            name=serializer.validated_data["name"],
+            cine_id=serializer.validated_data["cine"].id,
+            number=serializer.validated_data["number"],
             rows=serializer.validated_data["rows"],
             cols=serializer.validated_data["cols"],
         )
@@ -58,7 +146,9 @@ class SalaAdminViewSet(viewsets.ModelViewSet):
         serializer = SalaSerializer(sala, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         service = SalaService()
-        result = service.update_sala(sala, name=serializer.validated_data["name"])
+        cine = serializer.validated_data.get("cine", sala.cine)
+        number = serializer.validated_data.get("number", sala.number)
+        result = service.update_sala(sala, cine_id=cine.id, number=number)
         if result.success:
             return Response(result.data)
         return Response({"detail": result.error}, status=result.status_code)
@@ -122,7 +212,7 @@ class FuncionAdminViewSet(viewsets.ModelViewSet):
         return Response({"detail": result.error}, status=result.status_code)
 
 
-class ReservaAdminViewSet(viewsets.ReadOnlyModelViewSet):
+class ReservaAdminViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsAdminUser]
 
     def get_queryset(self):
@@ -135,8 +225,33 @@ class ReservaAdminViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_serializer_class(self):
         if self.action == "list":
-            return ReservaListSerializer
-        return ReservaSerializer
+            return AdminReservaListSerializer
+        return AdminReservaSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = CreateReservaSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            funcion = Funcion.objects.get(
+                id=serializer.validated_data["funcion_id"],
+                is_active=True,
+            )
+        except Funcion.DoesNotExist:
+            return Response(
+                {"detail": "Funcion not found or is not active."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        service = ReservaService()
+        result = service.create_reserva(
+            user=request.user,
+            funcion=funcion,
+            seats=serializer.validated_data["seats"],
+        )
+        if result.success:
+            return Response(result.data, status=result.status_code)
+        return Response({"detail": result.error}, status=result.status_code)
 
     @action(detail=True, methods=["post"])
     def anular(self, request, pk=None):

@@ -43,3 +43,4 @@ class MovieAdmin(admin.ModelAdmin):
     ]
     list_filter = ["genre", "is_active", "release_year"]
     search_fields = ["title"]
+    filter_horizontal = ["franjas"]

@@ -71,6 +71,9 @@ class Movie(TimeStampedMixin):
     actor_fk = models.ForeignKey(
         Actor, on_delete=models.PROTECT, null=True, blank=True, related_name="movies"
     )
+    franjas = models.ManyToManyField(
+        "reservations.Franja", blank=True, related_name="movies"
+    )
     is_active = models.BooleanField(default=True)
 
     class Meta:
