@@ -76,7 +76,7 @@ describe("LoginPage", () => {
 ```typescript
 import { vi } from "vitest";
 
-vi.mock("@/services/authService", () => ({
+vi.mock("@/features/auth/api/auth.api", () => ({
   loginUser: vi.fn(),
 }));
 ```

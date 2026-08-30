@@ -1,11 +1,11 @@
 import { lazy } from "react";
 import { Route } from "react-router-dom";
 
-const LoginPage = lazy(() => import("@/pages/LoginPage"));
-const RegisterPage = lazy(() => import("@/pages/RegisterPage"));
-const PasswordResetPage = lazy(() => import("@/pages/PasswordResetPage"));
+const LoginPage = lazy(() => import("@/features/auth/pages/LoginPage"));
+const RegisterPage = lazy(() => import("@/features/auth/pages/RegisterPage"));
+const PasswordResetPage = lazy(() => import("@/features/auth/pages/PasswordResetPage"));
 const PasswordResetConfirmPage = lazy(
-  () => import("@/pages/PasswordResetConfirmPage"),
+  () => import("@/features/auth/pages/PasswordResetConfirmPage"),
 );
 
 const publicRoutes = (

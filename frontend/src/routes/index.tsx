@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-import MainLayout from "@/components/MainLayout";
-import AdminProtectedRoute from "@/components/AdminProtectedRoute";
-import AdminLayout from "@/components/AdminLayout";
+import MainLayout from "@/layouts/MainLayout";
+import AdminProtectedRoute from "@/routes/AdminProtectedRoute";
+import AdminLayout from "@/layouts/AdminLayout";
 import publicRoutes from "@/routes/public";
 import protectedRoutes from "@/routes/protected";
 import adminChildren from "@/routes/admin";
