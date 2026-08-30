@@ -1,5 +1,5 @@
 import os, django
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 django.setup()
 from apps.common.models import User
 from apps.domains.movies.models import Movie

@@ -59,8 +59,8 @@ class GenreService(BaseService):
 ## Views
 
 ```python
-# Admin views (views.py) — permission_classes = [IsAuthenticated, IsAdminUser]
-# Public views (views_public.py) — permission_classes = [IsAuthenticated]
+# Admin views (views/admin.py) — permission_classes = [IsAuthenticated, IsAdminUser]
+# Public views (views/public.py) — permission_classes = [IsAuthenticated]
 
 def create(self, request, *args, **kwargs):
     serializer = self.get_serializer(data=request.data)
@@ -100,15 +100,29 @@ def create(self, request, *args, **kwargs):
 
 ```
 apps/domains/{domain}/
-├── models.py
-├── serializers.py
-├── services.py
-├── views.py          # Admin endpoints (/api/admin/)
-├── views_public.py   # Public endpoints (/api/)
+├── models/            # one file per entity (models/{entity}.py)
+│   └── __init__.py    # re-export all models
+├── serializers/       # one file per entity
+├── services/          # one file per entity/flow
+├── views/             # admin.py + public.py
+│   ├── admin.py       # Admin endpoints (/api/admin/)
+│   └── public.py      # Public endpoints (/api/)
 ├── urls.py            # Admin URLs (DefaultRouter)
 ├── urls_public.py     # Public URLs
 └── admin.py           # Django admin (optional)
 ```
+
+## Foundation Apps
+
+| App | Purpose |
+|-----|---------|
+| `apps/core/` | Shared foundation: `BaseService`, `ServiceResult`, `TimeStampedMixin`, decorators, middleware. No domain logic. |
+| `apps/accounts/` | Identity + RBAC: `User`, `Role`, permissions, auth backends, Djoser serializers, `UserAdminViewSet`, `RoleViewSet`. |
+| `apps/utils/` | Stateless helpers only (encryption, choices, slugify). No models, no Django state. |
+| `apps/data/` | Static data resources (e.g. `lucide_icons.py`). Plain Python package, not an installed app. |
+| `config/settings/` | `base.py` (shared) + `local.py` (dev) + `production.py` (prod). |
+
+`requirements/` is split per environment: `base.txt`, `local.txt`, `production.txt`.
 
 ## Deep-Dive References
 

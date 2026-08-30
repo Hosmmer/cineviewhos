@@ -1,6 +1,6 @@
 from rest_framework.routers import DefaultRouter
 
-from .views import (
+from .views.admin import (
     CineAdminViewSet,
     FormatAdminViewSet,
     FranjaAdminViewSet,

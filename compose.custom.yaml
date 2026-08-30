@@ -58,7 +58,7 @@ services:
       context: ./backend
       dockerfile: docker/Dockerfile.celery
     environment:
-      DJANGO_SETTINGS_MODULE: config.settings
+      DJANGO_SETTINGS_MODULE: config.settings.local
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-dev-secret-key}
       DJANGO_DEBUG: ${DJANGO_DEBUG:-True}
       POSTGRES_DB: ${POSTGRES_DB:-custom_app}
