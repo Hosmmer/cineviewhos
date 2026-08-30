@@ -2,11 +2,11 @@
 
 ## Lazy Loading Pages
 
-All page components are lazy-loaded in `App.tsx`:
+All page components are lazy-loaded in `routes/`:
 
 ```typescript
-const HomePage = React.lazy(() => import("@/pages/HomePage"));
-const LoginPage = React.lazy(() => import("@/pages/LoginPage"));
+const MovieHomePage = React.lazy(() => import("@/features/movies/pages/MovieHomePage"));
+const LoginPage = React.lazy(() => import("@/features/auth/pages/LoginPage"));
 ```
 
 Routes wrapped in `<Suspense>` with loading fallback:

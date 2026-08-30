@@ -4,8 +4,8 @@
 
 ```typescript
 import { useQuery } from "@tanstack/react-query";
-import { fetchModules } from "@/services/moduleService";
-import type { Module } from "@/types/modules";
+import { fetchModules } from "@/features/system/api/modules.api";
+import type { Module } from "@/features/system/types/system.types";
 
 export function useModules() {
   return useQuery<Module[]>({
@@ -20,7 +20,7 @@ export function useModules() {
 
 ## Hook File Conventions
 
-- One hook per file: `src/hooks/use{Name}.ts`
+- One hook per file: `features/{domain}/hooks/use{Name}.ts`
 - Named export, function declaration
 - Type generics on `useQuery<T>`
 
@@ -90,7 +90,7 @@ QueryClientProvider → IntlProvider → BrowserRouter → AuthProvider → App
 ## Auth Hook
 
 ```typescript
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/store/AuthContext";
 
 const { user, login, logout, register, isAuthenticated, isLoading } = useAuth();
 ```

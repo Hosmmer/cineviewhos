@@ -32,8 +32,8 @@ React 18.3, Vite, TypeScript (strict), React Router 6.26, React Query 5.56, Form
 
 1. **Function declarations only**: `function MyComp() {}`, NEVER arrow functions
 2. **Default exports**: `export default MyComponent`
-3. **Import order**: React → 3rd-party → `@/api` → `@/contexts` → `@/services` → `@/types` → `@/components` → `@/hooks`
-4. **Type-only imports**: `import type { User } from "@/types/auth"`
+3. **Import order**: React → 3rd-party → `@/services` → `@/store` → `@/utils` → `@/components` → `@/layouts` → `@/routes` → `@/features/...`
+4. **Type-only imports**: `import type { User } from "@/features/auth/types/auth.types"`
 
 ## Quick Patterns
 
@@ -124,7 +124,7 @@ DO NOT add extra context providers or state management libraries.
 
 ## CRUD Pattern (Admin)
 
-Every admin entity: `Admin{Entity}List.tsx` (table + delete modal + pagination) + `Admin{Entity}Form.tsx` (create = no id, edit = id from useParams).
+Every admin entity lives in `features/{domain}/admin/`: `Admin{Entity}List.tsx` (table + `ConfirmModal` + pagination) + `Admin{Entity}Form.tsx` (create = no id, edit = id from useParams).
 
 ## Routing
 
@@ -142,7 +142,7 @@ src/routes/
 
 ### Adding a new route:
 1. Choose the correct route file (public / protected / admin)
-2. Add `const NewPage = lazy(() => import("@/pages/NewPage"));`
+2. Add `const NewPage = lazy(() => import("@/features/{domain}/pages/NewPage"));`
 3. Add `<Route path="/new-path" element={<NewPage />} />` (wrap in `ProtectedRoute` if needed)
 4. NEVER touch `App.tsx` or `routes/index.tsx`
 

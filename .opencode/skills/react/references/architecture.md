@@ -1,188 +1,209 @@
 # Architecture & Project Structure — CineViewHos Frontend
 
-## Principles (from bulletproof-react + CineViewHos patterns)
+## Principles
 
-1. **Feature-based organization**: group by domain, not by file type
-2. **Unidirectional imports**: shared → features → app (never reverse)
-3. **No cross-feature imports**: features should not import from each other
-4. **No barrel files**: import directly (Vite tree-shaking)
-5. **Flat when small, grouped when large**: start flat, extract features when they grow
-6. **Domain documentation FIRST**: before creating a new feature, ensure `wiki/contexts/{domain}/CONTEXT.md` exists with glossary. Check `wiki/contexts/CONTEXT-MAP.md` for existing domains.
+1. **Separate logic from UX**: business logic and state live in `hooks/`, data access
+   in `api/`, presentation in `components/`. Pages only compose them.
+2. **Feature-based organization**: group by domain (`features/{domain}/`), not by file
+   type.
+3. **Unidirectional imports**: `routes`/`layouts` → `features` → (`components`,
+   `services`, `store`, `utils`). Leaf folders never import features.
+4. **No barrel files**: import directly (Vite tree-shaking).
+5. **Domain documentation FIRST**: before creating a new feature, ensure
+   `wiki/contexts/{domain}/CONTEXT.md` exists with glossary. Check
+   `wiki/contexts/CONTEXT-MAP.md` for existing domains.
 
-## Project Structure — Current
+## Project Structure
 
 ```
 frontend/src/
-├── main.tsx              # Root: StrictMode + providers
-├── App.tsx               # Routes (lazy-loaded pages)
-├── index.css             # Tailwind directives only
-├── api/
-│   └── django.ts         # Single axios instance + interceptors
-├── types/                # TypeScript interfaces (domain-based)
-│   ├── auth.ts
-│   ├── movies.ts
-│   ├── modules.ts
-│   └── reservations.ts
-├── services/             # API call functions (domain-based)
-│   ├── authService.ts
-│   ├── movieService.ts
-│   ├── moduleService.ts
-│   └── reservationService.ts
-├── hooks/                # Custom hooks (React Query wrappers)
-│   └── useModules.ts
-├── contexts/             # React Context providers
-│   └── AuthContext.tsx
-├── components/           # Shared UI components
+├── main.tsx                  # Entry: providers (QueryClient, Intl, Router, Auth)
+├── App.tsx                   # Thin root: renders <AppRoutes/>
+├── index.css                 # Tailwind directives only
+├── assets/                   # Global static assets (images, fonts, icons) — reserved
+├── components/               # Reusable cross-feature UI (no data fetching)
+│   ├── icons/
+│   │   ├── lucide-icons.generated.ts
+│   │   └── ModuleIcon.tsx        # Dynamic module icon (name -> lucide)
+│   └── ui/
+│       └── ConfirmModal.tsx      # Shared delete/confirm dialog
+├── layouts/                  # Base shells (depend on features for auth/modules)
 │   ├── MainLayout.tsx
 │   ├── AdminLayout.tsx
-│   ├── ProtectedRoute.tsx
-│   ├── AdminProtectedRoute.tsx
 │   ├── Navbar.tsx
 │   ├── MainSidebar.tsx
-│   ├── UserDrawer.tsx
-│   └── MovieCard.tsx
-├── pages/                # Route-level components
-│   ├── HomePage.tsx
-│   ├── LoginPage.tsx
-│   ├── RegisterPage.tsx
-│   ├── ProfilePage.tsx
-│   ├── MovieHomePage.tsx
-│   ├── MovieDetailPage.tsx
-│   ├── SeatSelectionPage.tsx
-│   ├── MyReservationsPage.tsx
-│   └── admin/
-│       ├── AdminDashboard.tsx
-│       ├── AdminMovieList.tsx / AdminMovieForm.tsx
-│       ├── AdminGenreList.tsx / AdminGenreForm.tsx
-│       ├── AdminDirectorList.tsx / AdminDirectorForm.tsx
-│       ├── AdminAuthorList.tsx / AdminAuthorForm.tsx
-│       ├── AdminActorList.tsx / AdminActorForm.tsx
-│       ├── AdminSalaList.tsx / AdminSalaForm.tsx
-│       ├── AdminFuncionList.tsx / AdminFuncionForm.tsx
-│       └── AdminReservationList.tsx
-├── i18n/                 # Translations (es.json, en.json)
-└── test/
-    └── test-utils.tsx    # customRender with all providers
+│   └── UserDrawer.tsx
+├── routes/                   # React Router config + route guards
+│   ├── index.tsx             # Composes all groups under MainLayout
+│   ├── public.tsx            # No auth
+│   ├── protected.tsx         # Auth required
+│   ├── admin.tsx             # Staff only
+│   ├── ProtectedRoute.tsx
+│   └── AdminProtectedRoute.tsx
+├── services/                 # Global services (no React, no domain)
+│   ├── django.ts             # Single axios instance + interceptors
+│   └── types.ts              # Shared API types (PaginatedResponse<T>)
+├── store/                    # Global app state (Context)
+│   └── AuthContext.tsx       # user, tokens, login/logout/register
+├── utils/                    # Pure functions (no React, no side effects)
+│   └── format.ts             # formatPrice, formatTime, formatDate, formatDateTime
+├── i18n/                     # Translations (es.json, en.json)
+├── test/
+│   └── test-utils.tsx        # customRender with all providers
+└── features/                 # App modules grouped by functionality
+    ├── auth/
+    │   ├── api/auth.api.ts       # loginUser, registerUser, resetPassword*, ...
+    │   ├── types/auth.types.ts
+    │   └── pages/{Login,Register,PasswordReset,PasswordResetConfirm}Page.tsx
+    ├── movies/
+    │   ├── api/                  # one file per entity
+    │   │   ├── movies.api.ts         # Movie CRUD
+    │   │   ├── genres.api.ts
+    │   │   ├── directors.api.ts
+    │   │   ├── authors.api.ts
+    │   │   ├── actors.api.ts
+    │   │   └── display-config.api.ts
+    │   ├── types/                # one file per entity
+    │   │   ├── movie.types.ts        # Movie, MovieList, MovieFormData, MovieDisplayConfig
+    │   │   ├── genre.types.ts
+    │   │   ├── director.types.ts
+    │   │   ├── author.types.ts
+    │   │   └── actor.types.ts
+    │   ├── utils/movies.utils.ts # buildFormatTabs, buildFranjaTabs, groupBy*
+    │   ├── components/{MovieCard,MovieShowtimes}.tsx
+    │   ├── pages/{MovieHomePage,MovieDetailPage}.tsx
+    │   └── admin/                # AdminMovieList/Form, AdminGenre*, AdminDirector*, ...
+    ├── bookings/
+    │   ├── api/                  # one file per entity
+    │   │   ├── funciones.api.ts      # funciones + seats
+    │   │   ├── reservas.api.ts
+    │   │   ├── salas.api.ts
+    │   │   ├── cines.api.ts
+    │   │   ├── formats.api.ts
+    │   │   └── franjas.api.ts
+    │   ├── types/                # one file per entity
+    │   │   ├── funcion.types.ts
+    │   │   ├── seat.types.ts
+    │   │   ├── reserva.types.ts
+    │   │   ├── sala.types.ts
+    │   │   ├── cine.types.ts
+    │   │   ├── format.types.ts
+    │   │   └── franja.types.ts
+    │   ├── components/SeatGrid.tsx
+    │   ├── pages/{SeatSelectionPage,MyReservationsPage}.tsx
+    │   └── admin/                # AdminSala*, AdminCine*, AdminFuncion*, AdminReservation*, ...
+    ├── profile/
+    │   └── pages/{ProfilePage,ChangePasswordPage}.tsx
+    └── system/
+        ├── api/modules.api.ts    # modules + roles
+        ├── api/users.api.ts      # fetchUsers, updateUserRoles (admin)
+        ├── types/system.types.ts # Module, Role, UserAdmin
+        ├── hooks/useModules.ts
+        └── pages/{AdminDashboard,AdminModuleList,AdminRoleList,AdminUserList}.tsx
 ```
 
-## When to Extract a Feature Folder
+## Feature Module Anatomy (the layer contract)
 
-Transform flat files into feature folders when:
+Every feature folder separates concerns. Use the minimal set it needs:
 
 ```
-# FROM (flat):
-pages/MovieHomePage.tsx
-pages/MovieDetailPage.tsx
-pages/SeatSelectionPage.tsx
-services/movieService.ts
-helpers/movieHelpers.ts
-hooks/useMovies.ts
-
-# TO (feature folder):
-features/movies/
-├── api/
-│   └── movieRequests.ts     # API calls specific to movies
-├── components/
-│   ├── MovieGrid.tsx        # Movie listing grid
-│   ├── MovieCard.tsx        # Already in shared/components/, consider moving
-│   ├── MovieFilters.tsx
-│   └── SeatGrid.tsx
-├── hooks/
-│   └── useMovies.ts         # React Query hooks for movies
-├── types/
-│   └── movie.types.ts       # Local types (if not shared)
-├── pages/
-│   ├── MovieHomePage.tsx
-│   ├── MovieDetailPage.tsx
-│   └── SeatSelectionPage.tsx
-└── utils/
-    └── movieFormatters.ts   # formatDuration(), formatRating(), etc.
+features/{domain}/
+├── api/         # HTTP calls for the model (data access: no React, no state)
+├── components/  # presentational views (props in, events out, no data fetching)
+├── hooks/       # business logic + state (controllers: React Query, form logic)
+├── pages/       # route-level composition (thin: hooks + components)
+├── types/       # TS types / interfaces for this module
+└── utils/       # domain-specific pure functions (optional)
 ```
 
-Extract to feature folder when:
-- A domain has **3+ pages**
-- A domain has **3+ custom hooks**
-- A domain has **5+ API functions** in a single service file
-- A domain has **domain-specific components** used only within that feature
+Rules:
 
-Keep in shared/ when:
-- Used by **2+ features** (e.g., MovieCard used in home page AND reservations)
-- Infrastructure (Navbar, Sidebar, Layout)
-- Auth/general utilities
+- **One file per entity** in `api/` and `types/` (e.g. `genres.api.ts` + `genre.types.ts`),
+  never a single mega-file for the whole feature. Split when a feature has 2+ entities.
+- `api/` functions take plain args and return parsed data (e.g. `.results`), never JSX.
+- `hooks/` own `useQuery`/`useMutation` and expose `{ data, isLoading, error, actions }`.
+- `components/` receive props and emit events; they must not import `api/` or call hooks
+  that fetch data.
+- `pages/` are the only files a route imports; keep them thin.
 
 ## Import Architecture (Unidirectional)
 
 ```
-┌────────────────────────────────────────┐
-│  App (pages/, layouts/)                │  ← Composes features
-├────────────────────────────────────────┤
-│  Features (features/{domain}/)         │  ← Domain logic, can import shared
-├────────────────────────────────────────┤
-│  Shared (components/, hooks/, types/)  │  ← Reusable, no feature imports
-├────────────────────────────────────────┤
-│  Core (api/, contexts/, i18n/)        │  ← Infrastructure, no feature imports
-└────────────────────────────────────────┘
+┌──────────────────────────────────────────────────┐
+│  App shell (layouts/, routes/, App.tsx)          │  ← Composes features
+├──────────────────────────────────────────────────┤
+│  Features (features/{domain}/)                   │  ← Domain logic + UI
+├──────────────────────────────────────────────────┤
+│  Leaf (components/, services/, store/, utils/)   │  ← Reusable, no feature imports
+└──────────────────────────────────────────────────┘
 
-APP can import → FEATURES and SHARED
-FEATURES can import → SHARED
-FEATURES cannot import → other FEATURES
-SHARED cannot import → FEATURES or APP
+app shell  can import → features AND leaf
+features   can import → leaf (and, rarely, another feature when inherent)
+leaf       cannot import → features or app shell
 ```
+
+Cross-feature imports are allowed only when inherent and documented, e.g.:
+- `features/bookings/admin/AdminFuncionForm` imports `features/movies/api/movies.api`
+  (showtime form needs the movie dropdown).
+- `features/movies/` imports `features/bookings/types/bookings.types` (`Funcion`).
+- `features/profile/` reuses `features/auth/api/auth.api` (updateProfile, changePassword).
 
 ## Component Organization Rules
 
-### When a component stays in shared/components/
+### Reusable → `components/` (top level)
 
 ```typescript
-// ✅ SHARED — used by multiple pages/features
-interface MovieCardProps { movie: MovieList; }
-export function MovieCard({ movie }: MovieCardProps) { ... }
+// ✅ components/ui/ConfirmModal.tsx — used by every admin list page
+function ConfirmModal({ open, title, message, onConfirm, onCancel }: ConfirmModalProps) {}
 
-// ✅ SHARED — infrastructure
-export function MainLayout() { ... }
-export function ProtectedRoute({ children }: { children: ReactNode }) { ... }
+// ✅ components/icons/ModuleIcon.tsx — sidebar + module admin
+function ModuleIcon({ name, className }: ModuleIconProps) {}
 ```
 
-### When a component belongs in a feature
+### Domain-specific → `features/{domain}/components/`
 
 ```typescript
-// ✅ FEATURE — only used within reservations feature
-// features/reservations/components/SeatGrid.tsx
-function SeatGrid({ seats, onSelect }: SeatGridProps) { ... }
+// ✅ features/bookings/components/SeatGrid.tsx — only used by bookings
+function SeatGrid({ seats, rows, cols, selected, onToggle }: SeatGridProps) {}
+```
+
+### Layout → `layouts/`
+
+```typescript
+// ✅ layouts/MainSidebar.tsx — module-driven navigation (imports system feature hook)
+```
+
+### Route guard → `routes/`
+
+```typescript
+// ✅ routes/ProtectedRoute.tsx, routes/AdminProtectedRoute.tsx
 ```
 
 ### When to split a large component
 
 ```typescript
-// FROM: 200+ line component doing everything
-function AdminMovieForm() {
-  // form logic + poster upload + cast selection + validation + submit
-  return <div>...200 lines...</div>;
+// FROM: 400+ line page doing everything
+function MovieDetailPage() {
+  // fetch + 8 helper functions + franja/format tabs + cine cards + seat buttons
 }
 
-// TO: composition
-function AdminMovieForm() {
-  return (
-    <MovieFormLayout>
-      <MovieBasicFields formik={formik} />
-      <PosterUpload formik={formik} fileInputRef={fileRef} />
-      <MovieCastSection formik={formik} />
-      <MovieFormActions isPending={isPending} isEdit={isEdit} onCancel={handleCancel} />
-    </MovieFormLayout>
-  );
+// TO: composition — helpers in utils/, showtimes UI in its own component
+function MovieDetailPage() {
+  // fetch movie + funciones, render header/sidebar/description
+  return <MovieShowtimes movieId={id} funciones={funciones} />;
 }
 ```
 
 Split component when:
-- Exceeds **200 lines** of JSX
-- Has **4+ distinct sections** (visual or logical)
-- Has **complex internal state** that could be its own hook
+- Exceeds ~200 lines of JSX.
+- Has 4+ distinct sections (visual or logical).
+- Has complex internal state that could be its own hook.
 
 ## State Management Architecture
 
 ```
 Global State (Context):
-  AuthContext — user, tokens, login/logout/register
+  store/AuthContext — user, tokens, login/logout/register
     ↓
 Server State (React Query):
   useQuery / useMutation — all API data
@@ -198,131 +219,48 @@ Persistent (localStorage):
 ```
 
 ### DO NOT add:
-- Redux / Zustand / MobX (React Query already handles server state)
-- Additional Context providers (AuthContext is sufficient)
-- Global form state libraries
+- Redux / Zustand / MobX (React Query already handles server state).
+- Additional Context providers (AuthContext is sufficient).
+- Global form state libraries.
 
 ## Routing Architecture
 
-Routes are split by **auth level** into separate modules. Each file owns its lazy imports and Route elements.
+Routes are split by auth level into `routes/`. Each file owns its lazy imports and
+`Route` elements. Guards (`ProtectedRoute`, `AdminProtectedRoute`) also live in
+`routes/`.
 
 ```
-src/
-├── routes/
-│   ├── index.tsx            # Composes all route groups under MainLayout
-│   ├── public.tsx           # No auth: /login, /register, /password/*
-│   ├── protected.tsx        # Auth required: /, /movies/:id, /profile, etc.
-│   └── admin.tsx            # Staff only: /admin/** CRUD
-└── App.tsx                  # Thin: import AppRoutes, render it
+src/routes/
+├── index.tsx            # Composes all groups under MainLayout
+├── public.tsx           # No auth: /login, /register, /password/*
+├── protected.tsx        # Auth: /, /movies/:id, /profile, etc.
+├── admin.tsx            # Staff: /admin/** CRUD
+├── ProtectedRoute.tsx
+└── AdminProtectedRoute.tsx
 ```
 
-### Route File Pattern
+### Adding a new page
 
-Each route file exports a **JSX fragment** (not a component), because React Router v6 `<Routes>` requires direct `<Route>` or `<React.Fragment>` children — custom components are not allowed.
-
-```typescript
-// src/routes/admin.tsx
-import { lazy } from "react";
-import { Route } from "react-router-dom";
-import AdminProtectedRoute from "@/components/AdminProtectedRoute";
-import AdminLayout from "@/components/AdminLayout";
-
-const AdminMovieList = lazy(() => import("@/pages/admin/AdminMovieList"));
-const AdminMovieForm = lazy(() => import("@/pages/admin/AdminMovieForm"));
-const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
-
-const adminRoutes = (
-  <Route
-    path="/admin"
-    element={
-      <AdminProtectedRoute>
-        <AdminLayout />
-      </AdminProtectedRoute>
-    }
-  >
-    <Route index element={<AdminDashboard />} />
-    <Route path="movies" element={<AdminMovieList />} />
-    <Route path="movies/create" element={<AdminMovieForm />} />
-    <Route path="movies/:id/edit" element={<AdminMovieForm />} />
-  </Route>
-);
-
-export default adminRoutes;
-```
-
-For flat routes (public, protected), use a fragment:
-
-```typescript
-// src/routes/public.tsx
-const publicRoutes = (
-  <>
-    <Route path="/login" element={<LoginPage />} />
-    <Route path="/register" element={<RegisterPage />} />
-  </>
-);
-
-export default publicRoutes;
-```
-
-### Composition (`src/routes/index.tsx`)
-
-```typescript
-import { Routes, Route } from "react-router-dom";
-import MainLayout from "@/components/MainLayout";
-import publicRoutes from "@/routes/public";
-import protectedRoutes from "@/routes/protected";
-import adminRoutes from "@/routes/admin";
-
-function AppRoutes() {
-  return (
-    <Routes>
-      <Route element={<MainLayout />}>
-        {publicRoutes}
-        {protectedRoutes}
-        {adminRoutes}
-      </Route>
-    </Routes>
-  );
-}
-
-export default AppRoutes;
-```
-
-### App.tsx (3 lines)
-
-```typescript
-import AppRoutes from "@/routes";
-
-function App() {
-  return <AppRoutes />;
-}
-
-export default App;
-```
-
-### Route Module Rules
-
-- **Public**: no auth required, exports `<>...</>` fragment with individual `<Route>` elements
-- **Protected**: wraps each page in `<ProtectedRoute>`, exports `<>...</>` fragment
-- **Admin**: wraps parent path in `<AdminProtectedRoute><AdminLayout /></AdminProtectedRoute>`, exports a single `<Route>` (not fragment, because it's a structural route)
-- **Exports JSX constants**, NOT components — React Router v6 `<Routes>` only accepts `<Route>` or `<>` children
-- **Lazy loading**: `React.lazy()` per page, co-located in the route file
-- **Suspense**: handled by `MainLayout` once (wraps `<Outlet />`)
-- **When adding a page**: import + add `<Route>` to the correct route file — never modify `App.tsx` or `index.tsx`
-- **When a route file exceeds ~80 lines**: consider splitting by sub-domain (e.g., `admin/movies.routes.tsx`)
+1. Create the page under `features/{domain}/pages/NewPage.tsx`.
+2. Add `const NewPage = lazy(() => import("@/features/{domain}/pages/NewPage"));` to the
+   correct route file (public/protected/admin).
+3. Add the `<Route>` (wrap in `ProtectedRoute` if needed).
+4. NEVER touch `App.tsx` or `routes/index.tsx`.
 
 ## Scaling Rules (Hard)
 
 | If... | Then... |
 |-------|---------|
-| Domain has 3+ pages | Extract to `features/{domain}/` |
-| Service file has 5+ API functions | Split by domain |
+| New domain appears | Create `features/{domain}/` with `api/hooks/components/pages/types` |
+| Domain has 3+ pages | Extract into its own feature folder |
+| Service file has 5+ API functions | Split by entity (one `.api.ts` per entity) |
+| Feature has 2+ entities | Split `api/` and `types/` per entity |
 | Component > 200 lines | Split into sub-components |
 | Hook > 50 lines | Consider splitting or extracting logic |
-| 3+ features use same component | Move to `shared/components/` |
-| Single component used in admin + public | Keep in `shared/` OR create variant |
+| 3+ features use same component | Move to top-level `components/` |
 | Page has business logic (calculations, side effects) | Extract to hook or util |
 | Same query in 2+ components | Extract to custom hook |
 | Form shared between create + edit | Extract to shared form component |
-| Types used by 2+ domains | Move to `types/` root (shared) |
-| Types used by 1 domain only | Keep in feature or co-locate |
+| Types used by 2+ domains | Move to `services/types.ts` (or a shared leaf) |
+| Types used by 1 domain only | Keep in the feature's `types/` |
+| Pure helper used by 2+ places | Move to `utils/` |

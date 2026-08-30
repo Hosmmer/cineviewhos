@@ -1,37 +1,37 @@
 import { lazy } from "react";
 import { Route } from "react-router-dom";
 
-const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
-const AdminGenreList = lazy(() => import("@/pages/admin/AdminGenreList"));
-const AdminGenreForm = lazy(() => import("@/pages/admin/AdminGenreForm"));
-const AdminMovieList = lazy(() => import("@/pages/admin/AdminMovieList"));
-const AdminMovieForm = lazy(() => import("@/pages/admin/AdminMovieForm"));
-const AdminDirectorList = lazy(() => import("@/pages/admin/AdminDirectorList"));
-const AdminDirectorForm = lazy(() => import("@/pages/admin/AdminDirectorForm"));
-const AdminAuthorList = lazy(() => import("@/pages/admin/AdminAuthorList"));
-const AdminAuthorForm = lazy(() => import("@/pages/admin/AdminAuthorForm"));
-const AdminActorList = lazy(() => import("@/pages/admin/AdminActorList"));
-const AdminActorForm = lazy(() => import("@/pages/admin/AdminActorForm"));
-const AdminSalaList = lazy(() => import("@/pages/admin/AdminSalaList"));
-const AdminSalaForm = lazy(() => import("@/pages/admin/AdminSalaForm"));
-const AdminCineList = lazy(() => import("@/pages/admin/AdminCineList"));
-const AdminCineForm = lazy(() => import("@/pages/admin/AdminCineForm"));
-const AdminCineDetail = lazy(() => import("@/pages/admin/AdminCineDetail"));
-const AdminFuncionList = lazy(() => import("@/pages/admin/AdminFuncionList"));
-const AdminFuncionForm = lazy(() => import("@/pages/admin/AdminFuncionForm"));
+const AdminDashboard = lazy(() => import("@/features/system/pages/AdminDashboard"));
+const AdminGenreList = lazy(() => import("@/features/movies/admin/AdminGenreList"));
+const AdminGenreForm = lazy(() => import("@/features/movies/admin/AdminGenreForm"));
+const AdminMovieList = lazy(() => import("@/features/movies/admin/AdminMovieList"));
+const AdminMovieForm = lazy(() => import("@/features/movies/admin/AdminMovieForm"));
+const AdminDirectorList = lazy(() => import("@/features/movies/admin/AdminDirectorList"));
+const AdminDirectorForm = lazy(() => import("@/features/movies/admin/AdminDirectorForm"));
+const AdminAuthorList = lazy(() => import("@/features/movies/admin/AdminAuthorList"));
+const AdminAuthorForm = lazy(() => import("@/features/movies/admin/AdminAuthorForm"));
+const AdminActorList = lazy(() => import("@/features/movies/admin/AdminActorList"));
+const AdminActorForm = lazy(() => import("@/features/movies/admin/AdminActorForm"));
+const AdminSalaList = lazy(() => import("@/features/bookings/admin/AdminSalaList"));
+const AdminSalaForm = lazy(() => import("@/features/bookings/admin/AdminSalaForm"));
+const AdminCineList = lazy(() => import("@/features/bookings/admin/AdminCineList"));
+const AdminCineForm = lazy(() => import("@/features/bookings/admin/AdminCineForm"));
+const AdminCineDetail = lazy(() => import("@/features/bookings/admin/AdminCineDetail"));
+const AdminFuncionList = lazy(() => import("@/features/bookings/admin/AdminFuncionList"));
+const AdminFuncionForm = lazy(() => import("@/features/bookings/admin/AdminFuncionForm"));
 const AdminReservationList = lazy(
-  () => import("@/pages/admin/AdminReservationList"),
+  () => import("@/features/bookings/admin/AdminReservationList"),
 );
-const AdminFormatList = lazy(() => import("@/pages/admin/AdminFormatList"));
-const AdminFormatForm = lazy(() => import("@/pages/admin/AdminFormatForm"));
-const AdminFranjaList = lazy(() => import("@/pages/admin/AdminFranjaList"));
-const AdminFranjaForm = lazy(() => import("@/pages/admin/AdminFranjaForm"));
-const AdminCashierPage = lazy(() => import("@/pages/admin/AdminCashierPage"));
-const AdminRoleList = lazy(() => import("@/pages/admin/AdminRoleList"));
-const AdminUserList = lazy(() => import("@/pages/admin/AdminUserList"));
-const AdminModuleList = lazy(() => import("@/pages/admin/AdminModuleList"));
+const AdminFormatList = lazy(() => import("@/features/bookings/admin/AdminFormatList"));
+const AdminFormatForm = lazy(() => import("@/features/bookings/admin/AdminFormatForm"));
+const AdminFranjaList = lazy(() => import("@/features/bookings/admin/AdminFranjaList"));
+const AdminFranjaForm = lazy(() => import("@/features/bookings/admin/AdminFranjaForm"));
+const AdminCashierPage = lazy(() => import("@/features/bookings/admin/AdminCashierPage"));
+const AdminRoleList = lazy(() => import("@/features/system/pages/AdminRoleList"));
+const AdminUserList = lazy(() => import("@/features/system/pages/AdminUserList"));
+const AdminModuleList = lazy(() => import("@/features/system/pages/AdminModuleList"));
 const AdminMovieDisplayConfig = lazy(
-  () => import("@/pages/admin/AdminMovieDisplayConfig"),
+  () => import("@/features/movies/admin/AdminMovieDisplayConfig"),
 );
 
 const adminChildren = (

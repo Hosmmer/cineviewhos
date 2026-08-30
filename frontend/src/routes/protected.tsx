@@ -1,13 +1,13 @@
 import { lazy } from "react";
 import { Route } from "react-router-dom";
-import ProtectedRoute from "@/components/ProtectedRoute";
+import ProtectedRoute from "@/routes/ProtectedRoute";
 
-const HomePage = lazy(() => import("@/pages/HomePage"));
-const MovieDetailPage = lazy(() => import("@/pages/MovieDetailPage"));
-const SeatSelectionPage = lazy(() => import("@/pages/SeatSelectionPage"));
-const MyReservationsPage = lazy(() => import("@/pages/MyReservationsPage"));
-const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
-const ChangePasswordPage = lazy(() => import("@/pages/ChangePasswordPage"));
+const MovieHomePage = lazy(() => import("@/features/movies/pages/MovieHomePage"));
+const MovieDetailPage = lazy(() => import("@/features/movies/pages/MovieDetailPage"));
+const SeatSelectionPage = lazy(() => import("@/features/bookings/pages/SeatSelectionPage"));
+const MyReservationsPage = lazy(() => import("@/features/bookings/pages/MyReservationsPage"));
+const ProfilePage = lazy(() => import("@/features/profile/pages/ProfilePage"));
+const ChangePasswordPage = lazy(() => import("@/features/profile/pages/ChangePasswordPage"));
 
 const protectedRoutes = (
   <>
@@ -16,7 +16,7 @@ const protectedRoutes = (
       element={
         <ProtectedRoute>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <HomePage />
+            <MovieHomePage />
           </div>
         </ProtectedRoute>
       }
