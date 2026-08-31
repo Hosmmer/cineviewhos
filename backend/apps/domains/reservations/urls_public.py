@@ -1,6 +1,6 @@
 from rest_framework.routers import DefaultRouter
 
-from .views_public import (
+from .views.public import (
     FormatPublicViewSet,
     FuncionPublicViewSet,
     FuncionSeatPublicViewSet,

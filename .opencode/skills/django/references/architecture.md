@@ -12,57 +12,72 @@
 
 ```
 backend/
-├── config/                  # Django settings, urls, wsgi, celery
-│   ├── settings.py          # ENV-driven settings
+├── config/
+│   ├── settings/            # settings package (split by environment)
+│   │   ├── __init__.py      # from .local import * (local dev default)
+│   │   ├── base.py          # shared config (apps, DRF, JWT, DB, email, celery)
+│   │   ├── local.py         # dev overrides
+│   │   └── production.py    # prod overrides (DEBUG False, security)
 │   ├── urls.py              # Root URL routing
+│   ├── wsgi.py
+│   ├── asgi.py
 │   └── celery_config.py
 ├── apps/                    # All application code
-│   ├── core/                # Foundation layer
-│   │   ├── services/
-│   │   │   └── base.py      # BaseService + ServiceResult
-│   │   └── data_classes.py
-│   ├── common/              # Shared: User model, permissions, auth, middleware
-│   │   ├── models.py        # User, Role
+│   ├── core/                # Foundation layer (no domain logic)
+│   │   ├── models.py        # TimeStampedMixin
+│   │   ├── data_classes.py  # ServiceResult
+│   │   ├── decorators.py
+│   │   ├── middleware.py
+│   │   └── services/
+│   │       └── base.py      # BaseService
+│   ├── accounts/            # Identity + RBAC
+│   │   ├── models.py        # User, Role (+ explicit through models)
+│   │   ├── serializers.py   # UserSerializer, UserAdminSerializer, RoleSerializer
 │   │   ├── permissions.py   # IsAdminUser, HasRole, IsOwnerOrAdmin
 │   │   ├── authentication.py
-│   │   ├── auth_backend.py
-│   │   ├── serializers.py   # UserSerializer (Djoser override)
-│   │   └── middleware.py
-│   ├── utils/               # Shared utilities
-│   │   ├── models.py        # TimeStampedMixin
-│   │   ├── utils.py         # slugify()
-│   │   ├── choices.py
-│   │   ├── encryption.py
-│   │   └── lucide_icons.py
-│   ├── modules/             # Dynamic navigation module system
-│   │   ├── models.py
-│   │   ├── serializers.py
-│   │   ├── services.py
-│   │   ├── views.py
-│   │   └── urls.py
-│   ├── domains/             # Business domains
-│   │   ├── movies/              # Movie domain
-│   │   │   ├── models.py        # Genre, Director, Author, Actor, Movie
-│   │   │   ├── serializers.py
-│   │   │   ├── services.py
-│   │   │   ├── views.py         # Admin endpoints
-│   │   │   ├── views_public.py  # Public endpoints
+│   │   ├── auth_backend.py  # UsernameOrEmailBackend
+│   │   ├── views.py         # UserAdminViewSet, RoleViewSet
+│   │   ├── urls.py
+│   │   └── admin.py
+│   ├── domains/             # Business domains (one folder per bounded context)
+│   │   ├── movies/
+│   │   │   ├── models/      # genre.py, director.py, author.py, actor.py, movie.py, display_config.py
+│   │   │   ├── serializers/ # one file per entity
+│   │   │   ├── services/    # one file per entity
+│   │   │   ├── views/       # admin.py + public.py
 │   │   │   ├── urls.py
 │   │   │   ├── urls_public.py
 │   │   │   └── admin.py
-│   │   └── reservations/        # Reservation domain
-│   │       ├── models.py        # Sala, Funcion, Seat, Reserva, ReservaSeat
+│   │   ├── reservations/
+│   │   │   ├── models/      # format.py, franja.py, cine.py, sala.py, funcion.py, seat.py, reserva.py, reserva_seat.py
+│   │   │   ├── serializers/
+│   │   │   ├── services/
+│   │   │   ├── views/       # admin.py + public.py
+│   │   │   ├── urls.py
+│   │   │   └── urls_public.py
+│   │   └── modules/         # Dynamic navigation module system
+│   │       ├── models.py    # Module
 │   │       ├── serializers.py
 │   │       ├── services.py
 │   │       ├── views.py
-│   │       ├── views_public.py
-│   │       ├── urls.py
-│   │       └── urls_public.py
+│   │       └── urls.py
+│   ├── utils/               # Stateless helpers only
+│   │   ├── encryption.py
+│   │   ├── choices.py
+│   │   └── utils.py         # slugify()
+│   └── data/                # Static data resources (plain package, not an app)
+│       └── lucide_icons.py
+├── requirements/            # Split per environment
+│   ├── base.txt
+│   ├── local.txt
+│   └── production.txt
 └── tests/                   # Pytest suite
     └── apps/
         └── {app}/           # Mirrors apps/ structure
+            ├── test_models.py
             ├── test_services.py
-            └── test_views.py
+            ├── test_views.py
+            └── test_permissions.py
 ```
 
 ## When to Create a New App
@@ -231,12 +246,14 @@ tests/
 
 | If... | Then... |
 |-------|---------|
-| App has 5+ models | Consider splitting into sub-apps |
-| services.py > 300 lines | Split into `services/` module |
+| App has 5+ models | Split into `models/` package — one file per entity |
+| App has 5+ serializers | Split into `serializers/` package — one file per entity |
+| services.py > 300 lines | Split into `services/` package — one file per entity/flow |
 | Same query in 3+ files | Extract to `selectors.py` |
 | View has business logic | Move to service |
 | Serializer has `create()`/`update()` logic | Move to service |
 | Nested serializers > 2 levels | Flatten or use separate endpoints |
 | 3+ services share validation | Extract to `validators.py` |
 | App imports from another app 5+ times | Consider if domains need merging |
-| settings.py > 300 lines | Split by concern (auth, storage, celery, etc.) |
+| settings.py > 300 lines | Split into `config/settings/` package (base/local/production) |
+| 5+ ViewSets in one app | Split into `views/admin.py` + `views/public.py` |
