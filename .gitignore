@@ -38,6 +38,9 @@ backend/__pycache__
 backend/static
 backend/*.egg-info/
 
+# Uploaded media (pósters, avatares, etc.) — no se versiona
+backend/media/
+
 # VitePress
 **/.vitepress/dist
 **/.vitepress/cache
